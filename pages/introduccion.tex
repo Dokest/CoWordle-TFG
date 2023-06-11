@@ -1,28 +1,35 @@
-Se puede añadir texto antes de empezar la primera sección.
-
-
 \section{Contexto y alcance}
 
-Esta memoria representa el trabajo realizado para desarrollar la aplicación web de CoWordle, que ademas representa el trabajo de fin de grado de Jorge Moreno Fernández.
-El objetivo de este trabajo era conseguir realizar una aplicación web interactuable en tiempo real utilizando websockets y las últimas tecnologias web.
+Este trabajo representa la finalización del Grado de Ingeniería Informática, en el cual, se demostrarán algunas de las habilidades obtenidas a lo largo de los cursos, así como la capacidad de aprendizaje que se obtiene tras adquirir una amplía base de conocimientos.
+
+La realización de CoWordle se centra en el aprendizaje por parte del autor de algunas tecnologías web, como la utilización de WebSockets como método de comunicación entre cliente y servidor.  Además, permite aprender también tecnologías como Docker, que permiten desplegar la aplicación de manera sencilla, independientemente del lugar de despliegue.
+
+La tecnología de sockets es una tecnología que se estudia brevemente en el grado, pero no se llega a utilizar de manera práctica.
 
 
-\section{Estructura del documento}
-
-La estructura del TFG no es fija. El tutor indicará una estructura adecuada dependiendo del trabajo concreto.\tutor{Comentario del tutor}
-
-Se puede incluir dentro de cada apartado secciones adicionales. La copia en papel de la memoria del TFG será encuadernada en pasta dura de color azul (p.e. encuadernación tipo chanel). La portada, que puede ser una pegatina transparente, seguirá el modelo que se adjunta, que incluye el escudo y nombre de la URJC, la titulación cursada por el alumno, el curso académico, el título del TFG, el autor y el o los directores/tutores.\alumno{Comentario del alumno}
-
-\section{La idea}
-CoWordle es un juego multijugador derivado de Wordle, que añade a la versión original la capacidad de jugar en tiempo real con otros jugadores.
+\section{Introducción}
+CoWordle es un juego web multijugador derivado de Wordle. CoWordle añade a la versión original la capacidad de desafiar a otros jugadores y competir en tiempo real jugando una partida de Wordle simultánea.
 
 
 \section{Wordle}
-Wordle es un juego de navegador creado por el ingeniero Josh Wardle.
+Wordle es un juego de navegador creado por el ingeniero Josh Wardle durante la pandemia de 2020-2023, donde los jugadores tienen que encontrar una palabra objetivo probando otras palabras, parecido a juegos como el ahorcado.
+
+\begin{figure}
+	\centering
+	\includegraphics[clip=true, width=0.75\textwidth]{images/wordle.png}
+	\caption{Aplicación oficial de Wordle.}
+	\label{fig:wordle_app}
+\end{figure}
+
 
 \subsection{La historia de Wordle}
 
-TODO
+En sus comienzos Wordle solo era jugado por los amigos y familiares de Josh Wardle (Junio 2021), más tarde, Wardle publicó su juego en internet alcanzando menos de 100 jugadores durante las primeras semanas. Sin embargo, en enero de 2022 ya contaba con más de 300.000 jugadores cada día, y para finales de ese mismo mes ya jugaban millones de personas.
+
+A finales de Enero de 2022, con la espectacular recepción del juego, The New York Times compró el juego por una cifra que no se ha publicado, pero que según el propio Wardle, ronda las 7 cifras.
+
+En el informe de ganancias trimestrales de Marzo de 2022, The New York Times anunció que la compra de Wordle había traído a millones de jugadores a su página, y además muchos de estos nuevos jugadores, habían probado otros juegos ofrecidos por el noticiario.
+
 
 \subsection{¿Comó se juega?}
 
@@ -43,6 +50,43 @@ Esta estadística ha sido uno de los grandes éxitos del juego, millones de juga
 
 \subsection{Otras aplicaciones derivados de Wordle}
 
-Tras el éxito de Wordle, multitud de aplicaciones comenzaron a aparecer que clonaban las mismas mecánicas que Wordle, entre ellas, existen versiones en diferentes lenguajes o versiones donde tienes que resolver múltiples palabras simultáneamente (Octordle).
+Tras el éxito de Wordle, multitud de aplicaciones comenzaron a aparecer que clonaban las mismas mecánicas que Wordle, entre ellas, existen versiones en diferentes lenguajes o versiones donde tienes que resolver múltiples palabras simultáneamente como Octordle (imagen \ref{fig:octordle_app}) o Dordle (imagen \ref{fig:dordle_app}).
 
-\includegraphics[clip=true,width=\textwidth]{images/octordle.png}
+
+\begin{figure}
+	\centering
+	\includegraphics[clip=true,width=\textwidth]{images/octordle.png}
+	\caption{Aplicación Octordle.}
+	\label{fig:octordle_app}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[clip=true,width=0.75\textwidth]{images/dordle.png}
+	\caption{Aplicación Dordle.}
+	\label{fig:dordle_app}
+\end{figure}
+
+
+A parte de inspirar multitud de juegos sobre palabras, existen variaciones como Globle, Worldle (figura \ref{fig:worldle_app}), en las que el objetivo es descubrir países utilizando las formas de estos, o Numberle (figura \ref{fig:numberle_app}), donde el objetivo el completar ecuaciones matemáticas.
+
+\begin{figure}
+	\centering
+	\includegraphics[clip=true,width=0.75\textwidth]{images/worldle.png}
+	\caption{Aplicación Worldle.}
+	\label{fig:worldle_app}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[clip=true,width=0.75\textwidth]{images/numberle.png}
+	\caption{Aplicación Numberle.}
+	\label{fig:numberle_app}
+\end{figure}
+
+
+\section{CoWordle}
+
+CoWordle añade otro \textit{twist} a Wordle, añadiendo un valor competitivo que aparece cuando múltiples jugadores tienen que descubrir la misma palabra en tiempo real. Los jugadores se encuentran con dos problemas simultáneos, el primero es conseguir averiguar la palabra antes de que se agoten todos los intentos, y el segundo es hacerlo antes que lo consigan los demás jugadores.
+
+Para poder hacer que los jugadores compitan simultáneamente es necesario alguna tecnología que los permita comunicarse en tiempo real, por ello, CoWordle presenta una muy buena oportunidad para aprender sobre cómo funcionan y cómo se usan las tecnologías de tiempo real, aunque para la realización de este proyecto se ha utilizado únicamente WebSockets.
