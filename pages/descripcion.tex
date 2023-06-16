@@ -52,13 +52,28 @@ El flujo principal que sigue el usuario para poder jugar una partida comienza ab
 	\includegraphics[clip=true,width=\textwidth]{./diagrams/webapp_flow.pdf}
 \end{center}
 
+\subsubsection{Comunicación websocket}
+La comunicación websocket ha sido el punto de aprendizaje principal, según se fueron desarrollando las diferentes partes para el trabajo, se fue definiendo lo que acabó siendo una serie de reglas sobre la comunicación diferenciando estas en tres tipos de comunicación diferentes.
+
+Para entender estos tres tipos de comunicación hay que entender primero el sistema de comunicación HTTP. En este tipo de comunicación es el cliente el que inicia la llamada y es el servidor el que responde a esta. Sin embargo, en websockets, el servidor puede enviar información al cliente sin que sea el iniciador de la llamada. Por ello Websockets funciona por sistemas de eventos, donde el socket puede enviar y esperar comunicación (comunicación bidireccional).
+
+Una vez entendida la comunicación HTTP y la comunicación websocket, y las diferencias entre ambas, va a quedar claro porque en CoWordle se diferencia entre tres tipos distintos de comunicación.
+
+En primer lugar tenemos la comunicación cliente - servidor, donde el cliente envía eventos al servidor, y el servidor puede actuar ante estos eventos, pero no responde a través de ellos. 
+Estos eventos se clasifican como eventos OUT, ya que el cliente envía información al exterior. Por ejemplo, la llamada cuando un jugador ha sido expulsado de la partida (\textit{remove\_player}), se envía desde el host de la partida hacia el servidor, cuando el servidor ha procesado este evento, envía a todos los jugadores de la partida el evento \textit{player\_disconnected}, y serán los clientes los que eliminen de sus listados locales al jugador que se ha eliminado.
+
+En segundo lugar tenemos la comunicación servidor - cliente, un ejemplo de esto es el recién descrito \textit{player\_disconnected}, en el que el servidor envía un evento a los jugadores de la sala. Este tipo de eventos se clasifica en CoWordle como IN, porque el cliente recibe información del servidor.
+
+Por último lugar el último tipo de comunicación se clasifica como DIALOGUE, y se explica porque es comunicación cliente - servidor - cliente, es decir, es el cliente el que comienza la comunicación, el servidor procesa la respuesta y se la envía al cliente con el mismo nombre de evento con el que la llamada había comenzado, hasta que la llamada no ha sido respondida, el cliente se quedará esperando una respuesta de manera asíncrona, es decir, sin bloquear al resto de la aplicación.
 
 \subsection{Servidor Websockets}
-
 El servidor de websockets está implementado utilizando Deno y una librería que ayuda al manejo de eventos para los websockets llamada Socket.io. Deno se utiliza para levantar el servidor y para recibir peticiones HTTP, aunque existen pocos endpoints para la comunicación HTTP, existe un endpoint necesario para que Socket.io cree la conexión de Websockets, y uno más para la creación de la partida.
 
-\subsubsection{Endpoints disponibles}
+\subsubsection{Sistema de eventos}
+El servidor responde a peticiones HTTP y de Websockets creando eventos que son respondidos de manera secuencial por funciones lambda, cada función sólo responde a un evento, devolviendo una respuesta.
+Javascript es una tecnología uni-hilo, pero es capaz de realizar concurrencia utilizando primitivas asíncronas llamadas promesas, cuando una función marcada como asíncrona se ejecuta, el motor de Javascript la guarda como evento, este evento será manejado cuando el motor de Javascript lo considere oportuno. Por ejemplo, cuando la CPU está esperando una lectura de la memoría, Javascript puede cambiar el contexto y procesar otras funciones. De está manera, Javascript es capaz de maximizar la utilización de su hilo de ejecución.
 
+\subsubsection{Eventos disponibles}
 El servidor permite la comunicación utilizando las siguientes rutas HTTP:Soso
 
 \begin{itemize}
@@ -76,3 +91,87 @@ A parte de las rutas HTTP, el servidor permite la comunicación Websocket utiliz
 	\item \textit{start\_game} es un evento de tipo out que permite al host de la partida empezar. En el momento que se lanza este evento todos los jugadores reciben el evento \textit{start\_prematch} que les indica cuándo comenzará la partida.
 	\item \textit{disconnect} es un evento nativo de Socket.io, que permite al servidor conocer cuando un jugador se ha desconectado de la partida, existen varias razones para que se ejecute este evento, por ejemplo, que el jugador haya perdido la conexión con internet, o que el jugador haya decidido abandonar la partida cerrando el navegador. En este evento se comunica al resto de jugadores que este ha abandonado la partida, en caso de ser el jugador que ha creado la partida el que la abandona, se cierra también para el resto de jugadores.
 \end{itemize}
+
+
+\subsubsection{Endpoints HTTP}
+Como el objetivo del trabajo era el aprendizaje de la comunicación bidireccional, la mayor parte de la comunicación se realiza a traves de websockets, aun asi existen dos rutas disponibles para la realización de comunicación HTTP:
+
+\begin{itemize}
+	\item \textit{/create-room} crea una nueva partida para que los jugadores puedan unirse y jugar. Cada partida está identificada por un identificador que se genera durante este proceso.
+	\item Existe también una ruta reservada por la librería de Socket.IO que se utiliza internamente para establecer la conexión websocket. Esta ruta está completamente manejada por Socket.IO.
+\end{itemize}
+
+\subsubsection{Identificador de partida}
+Cada partida tiene un identificador único de seis cifras generado pseudo-aleatoriamente llamado roomCode. El roomCode lo generará el servidor de websockets tras la petición de /create-room, este endpoint HTTP únicamente reserva el código generado para la partida, utilizando ese código los jugadores son capaces de unirse a la partida inicialmente, el código también se utiliza para realizar la comunicación cliente-servidor.
+
+
+\section{Diseño e Implementación}
+
+\subsection{La reutilización de componentes}
+Svelte, la tecnología que he usado para hacer los componentes de front, se basa en la creación de componentes que puedan ser reutilizados en diferentes situaciones, la reutilización de código se considera buena práctica en todo el ámbito de la ingeniería informática. Por ello parece importante destacar que una buena elección de la tecnologías es solo la base, y es necesario hacer un buen uso de estas para poder llegar a un buen resultado, por ello en este apartado quiero destacar un buen uso de componentes de Svelte.
+
+Existe un componente que se reutiliza varias veces a lo largo de la aplicación, el componente llamado <Word>, que se encuentra en el archivo Word.svelte de la aplicación cowordle-webapp.
+
+Este componente se utiliza como botones estilizados en el menú principal, en este primer uso, el componente muestra la palabra elegida por el desarrollador, indicando al usuario que es un botón con el que puede interaccionar.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true]{images/reusing/host_component.png}
+	\caption{Imagen del componente como botón.}
+	\label{fig:comp_host_image}
+\end{figure}
+
+Después, se vuelve utilizar como huecos para las palabras mientras se juega, en este caso la palabra tiene distinto número de huecos disponibles, además está completamente vacía de texto.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true, width=0.75\textwidth]{images/reusing/empty_component.png}
+	\caption{Imagen del componente con texto vacio.}
+	\label{fig:comp_empty}
+\end{figure}
+
+
+Cuando el jugador interacciona con el teclado mientras juega, las palabras se van llenando de letras.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true, width=0.75\textwidth]{images/reusing/filled_component.png}
+	\caption{Imagen del componente con texto.}
+	\label{fig:comp_filled}
+\end{figure}
+
+Además, las letras muestran el progreso de la palabra objetivo, utilizando los colores característicos.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true, width=0.75\textwidth]{images/reusing/colored_component.png}
+	\caption{Imagen del componente con texto y colores.}
+	\label{fig:comp_colored}
+\end{figure}
+
+Todas las imágenes mostradas representan el mismo componente de Svelte, y permiten mostrar las ventajas de utilizar tecnologías web reactivas.
+Comenzando por el principio, necesitamos un componente que sea capaz de mostrar texto.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true, width=0.75\textwidth]{images/reusing/code_simple_component.png}
+	\caption{Imagen código para utilizar el componente.}
+	\label{fig:comp_simple_code}
+\end{figure}
+
+Así es como se utiliza el componente Word, para mostrar el texto de la primera imagen simplemente es necesario definir la palabra a mostrar y su longitud.
+
+También queremos que el componente reciba texto del usuario dinámicamente, esto sería posible reprogramando al componente o creando uno nuevo, pero realmente ya tenemos esta funcionalidad sin necesidad de programar nada más. En lugar de utilizar como argumento para el parámetro word un string fijo, podemos utilizar una variable, e indicarle a Svelte que esa variable es reactiva utilizando, la directiva bind, que recalcula el componente cada vez que cambia el contenido de la variable pasada.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true, width=0.75\textwidth]{images/reusing/code_dyn_component.png}
+	\caption{Imagen código para utilizar el componente con texto dinámico.}
+	\label{fig:comp_dyn_code}
+\end{figure}
+
+En este caso estamos utilizando la directiva bind para hacer que el componente se redibuje cada vez que cambia la variable code. Esto significa que nuestro componente es ajeno al texto que presentamos, y es responsabilidad de otros componentes seleccionar el texto a mostrar.
+
+Parece un pequeño detalle, pero esta flexibilidad de desarrollo simplifica el código haciéndolo muy reutilizable y componible.
+
+La primera implementación del componente Word se hizo cuando se comenzó el proyecto,  y sin mucho cambio, ha llegado a utilizarse en otras partes de la aplicación en las que no se había llegado a pensar cuando se creó el componente, y eso demuestra que se realizó un buen diseño inicialmente.
