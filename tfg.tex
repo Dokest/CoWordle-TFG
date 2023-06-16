@@ -224,6 +224,83 @@ upquote=true,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+%%%%%%%%%%%%%%%%%%%%%%% Estilo de código (en Typescript) %%%%%%%%%%%%%%%%%%%%%%%
+
+% Javascript style for highlighting
+\lstdefinelanguage{Typescript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, false, finally, for, function, if, in, instanceof, new, null, return, switch, this, throw, true, try, typeof, var, void, while, with, const, as, extends},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  sensitive=true
+}
+
+% \lstset{
+%    language=JavaScript,
+%    backgroundcolor=\color{lightgray},
+%    extendedchars=true,
+%    basicstyle=\footnotesize\ttfamily,
+%    showstringspaces=false,
+%    showspaces=false,
+%    numbers=left,
+%    numberstyle=\footnotesize,
+%    numbersep=9pt,
+%    tabsize=2,
+%    breaklines=true,
+%    showtabs=false,
+%    captionpos=b
+% }
+
+% Typescript style for highlighting
+\newcommand\mytypescriptstyle{\lstset{
+language=Typescript,
+basicstyle=\ttfamily\small,
+%basicstyle=\linespread{1.0}\footnotesize\ttm,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\bfseries\ttfamily\color{myteal},
+%keywordstyle=\ttb\color{myteal},
+commentstyle=\itshape\color{myteal},
+stringstyle=\color{mydeepteal},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\color{mydeepteal},    % Custom highlighting style
+% Any extra options here
+showstringspaces=false,            %
+backgroundcolor=\color{bg},
+rulecolor = \color{bg},
+%identifierstyle=\color{deepgreen},
+breaklines=true,
+numbers=left,
+numbersep=5pt,
+numberstyle=\tiny,
+tabsize=4,
+xleftmargin=1em,
+frame = single,
+framesep = 3pt,
+framextopmargin=0pt,
+framexbottommargin=0pt,
+framexleftmargin=0pt,
+framexrightmargin=0pt,
+fontadjust=true,
+basewidth=0.55em, % compactness of code
+upquote=true,
+}}
+
+% Typescript environment
+\lstnewenvironment{mytypescript}[1][]
+{
+\mytypescriptstyle
+\lstset{#1}
+}
+{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Comandos definidos por el autor 
@@ -257,57 +334,57 @@ upquote=true,
 % Universidad, Facultad
 \begin{titlepage}
 	\selectlanguage{spanish}
-		
-		
+																																														
+																																														
 	% logo
 	\begin{center}
 		\includegraphics[scale=0.7]{\logoUniversidad}
 	\end{center}
-		
+																																														
 	\bigskip
-		
+																																														
 	\begin{center}
 		\begin{LARGE}
 			\escuela \\
 		\end{LARGE}
 	\end{center}
-		
+																																														
 	\bigskip
 	\bigskip
-		
+																																														
 	% Grado
 	\begin{center}
 		\begin{large}
 			\textbf{\grado}\\
 		\end{large}
 	\end{center}
-		
+																																														
 	% Curso
 	\begin{center}
 		\begin{large}
 			\textbf{\curso}\\
 		\end{large}
 	\end{center}
-		
+																																														
 	\bigskip
-		
+																																														
 	\textbf{\begin{center}
 		\begin{large}
 			\textbf{Trabajo Fin de Grado}
 		\end{large}
 		\end{center}}
-		
+																																														
 	\bigskip
 	\bigskip
 	\bigskip
-		
+																																														
 	% Nombre del TFG
 	\begin{center}
 		\textbf{\begin{large}
 			\MakeUppercase{\titulotrabajo}\\
 			\end{large}}
 	\end{center}
-		
+																																														
 	% Nombre del autor
 	\vspace{\fill}
 	\begin{center}
@@ -315,10 +392,10 @@ upquote=true,
 		% Tutor
 		\textbf{Tutor: \nombretutor}\\
 		% Añadir segundo tutor si hubiera
-				
-				
+																																																																																												
+																																																																																												
 		\bigskip
-				
+																																																																																												
 		% Fecha
 		%\textbf{\fecha}\\
 	\end{center}

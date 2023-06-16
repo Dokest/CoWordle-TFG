@@ -154,7 +154,7 @@ Comenzando por el principio, necesitamos un componente que sea capaz de mostrar 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[clip=true, width=0.75\textwidth]{images/reusing/code_simple_component.png}
+	\includegraphics[clip=true, width=0.6\textwidth]{images/reusing/code_simple_component.png}
 	\caption{Imagen código para utilizar el componente.}
 	\label{fig:comp_simple_code}
 \end{figure}
@@ -175,3 +175,142 @@ En este caso estamos utilizando la directiva bind para hacer que el componente s
 Parece un pequeño detalle, pero esta flexibilidad de desarrollo simplifica el código haciéndolo muy reutilizable y componible.
 
 La primera implementación del componente Word se hizo cuando se comenzó el proyecto,  y sin mucho cambio, ha llegado a utilizarse en otras partes de la aplicación en las que no se había llegado a pensar cuando se creó el componente, y eso demuestra que se realizó un buen diseño inicialmente.
+
+\subsection{Tipados en la comunicación websocket}
+Como se ha explicado en el apartado XX, la comunicación websocket con el servidor de CoWordle se clasifica en tres grupos, según sea cliente - servidor, servidor - cliente y cliente - servidor - cliente. En este apartado se va a explicar cómo de fácil es realizar esta comunicación independientemente del tipo de esta.
+
+Toda esta capa de tipado se construye como un wrapper sobre el socket expuesto por Socket.IO, esto permite utilizar la potencia de Socket.IO, mientras se provee la seguridad de tipos y la comodidad se autocompleciones del IDE.
+
+\subsubsection{Comunicación IN}
+Para la comunicación IN, es el servidor quien envía el evento al cliente, por ello el cliente debe quedarse esperando a que el servidor envíe la petición.
+
+El wrapper expone un método \textit{on}, que permite añadir un callback cuando el evento sea emitido, es decir, cuando el servidor lo emite y el cliente lo haya recibido.
+
+\begin{mytypescript}[float={!h},caption={Uso de eventos websocket IN.},label={alg:ws_in_usage}]
+	this.socket.on("player_connected", ({ newPlayer }) => {
+		this.addPlayer(newPlayer);
+																														
+		this.notifies.playersUpdated.broadcast(this.players);
+	}); 
+\end{mytypescript}
+
+En el ejemplo del código \ref{alg:ws_in_usage} se puede observar cómo se está definiendo que cuando el evento \textit{player\_connected} ocurra, la función lambda debe ejecutarse. El evento \textit{player\_connected} está declarado utilizando tipos de la siguiente manera:
+
+\begin{mytypescript}[float={!h},caption={Ejemplo de declaración de la comunicación IN.},label={alg:player_connected_type}]
+	export type WebsocketInEvent = {
+		...
+		player_connected: {
+			newPlayer: InitialPlayerInfoDto;
+		};
+		...
+	};
+\end{mytypescript}
+
+En esta declaración tan solo necesitamos indicar los parámetros que nos van a llegar del servidor, esta declaración de tipos permite dos mejoras con respecto a los eventos directos de Socket.IO. Por un lado, el IDE ofrece ayuda sobre los nombres de los eventos disponibles sobre los que hacer la espera, además, nos ofrecerá ayuda sobre los parámetros que vamos a recibir según el nombre que indicamos en el primer argumento.
+
+Todo esto es posible gracias al poderoso sistema de genéricos proporcionado por Typescript.
+
+\begin{mytypescript}[float={!h},caption={Declaración del método \textit{on}.},label={alg:on_method}]
+	on<TEvent extends EventName<WebsocketInEvent>, TArgs extends WebsocketInEvent[TEvent]>(
+	event: TEvent,
+	callback: (args: TArgs) => void,
+	): void {
+		this.socket.on(event as string, callback);
+	}
+\end{mytypescript}
+
+Como se puede ver en la definición del método \textit{on}, el primer parámetro es el nombre del evento, que está tipado como el genérico \textit{TEvent} que está a su vez definido como un nombre de evento de la lista de eventos IN. El segundo parámetro es el callback a que se llamará cuando el evento se ejecute, este parámetro está tipado como una función que recibe un argumento del tipo \textit{TArgs}, que es de la lista de eventos IN, aquel que coincide con la el genérico \textit{TEvent}. Todo ello ofrece suficiente información al IDE para ser capaz de autocompletar todo lo necesario para que el programador esté seguro de lo que está programando es correcto, y además, mejora la mantenibilidad a largo plazo, porque en caso de cambiar el tipado de algún evento IN de la lista de eventos, el cambio sería reflejado automáticamente en toda la aplicación y en caso de que no coincidieran los nuevos tipos con los antiguos, Typescript indicaría al programador donde ha ocurrido el fallo de tipado.
+
+\subsubsection{Comunicación OUT}
+La comunicación OUT es aquella que ocurre en dirección cliente - servidor, el cliente solo pretende comunicar información al servidor, sin esperar nada de respuesta.
+
+\begin{mytypescript}[float={!h},caption={Ejemplo de uso del método \textit{emit}.},label={alg:emit_usage}]
+	startGame(wordListId: string): void {
+		this.socket.emit("start_game", {
+			wordListId,
+		});
+	}
+\end{mytypescript}
+
+En este ejemplo, se puede ver cómo se emite un evento al servidor, para emitir un evento necesitamos el nombre del evento a emitir, y necesitamos también la información que queremos enviar por el socket.
+
+Al igual que la comunicación IN, el sistema dispone de un lugar donde definir todos los eventos OUT, para el ejemplo mostrado en la figura anterior, el evento está definido de la siguiente manera:
+
+\begin{mytypescript}[float={!h},caption={Ejemplo de declaración de la comunicación OUT.},label={alg:start_game_type}]
+	export type WebsocketOutEvent = {
+		...
+		start_game: {
+			wordListId: string;
+		};
+	};
+\end{mytypescript}
+
+Esta definición es la versión inversa de la mostrada en los eventos IN, lo que declaramos dentro del evento representan los argumentos que vamos a enviar al servidor, mientras que la comunicación IN se definen los argumentos que íbamos a recibir. A pesar de la diferencia de uso, la forma de declarar ambos es la misma.
+
+% vs-code
+\begin{mytypescript}[float={!h},caption={Declaración del método \textit{emit}.},label={alg:emit_method}]
+	emit<TEvent extends EventName<WebsocketOutEvent>,TArgs extends WebsocketOutEvent[TEvent]>(
+	event: TEvent,
+	args: TArgs,
+	): void {
+		this.socket.emit(event, args);
+	}
+\end{mytypescript}
+
+Si nos adentramos en la declaración del método \textit{Emit}, que como ya hemos visto es el que se utiliza para la comunicación OUT, volvemos a ver la aparición de un tipo genérico \textit{TEvent}, con la diferencia de que este \textit{TEvent} es un evento de la lista de eventos OUT, la otra diferencia con el método \textit{on}, es que en este utilizamos el argumento \textit{args} como el argumento del método \textit{emit} de Socket.IO, que es el que realizara la petición siguiendo el estándar websocket.
+
+El método \textit{emit} ofrece al programador la misma seguridad y mantenibilidad que el método \textit{on}, además, su similitud de uso, ayuda a que sea más fácil usarlo por programadores de todos los niveles.
+
+\subsubsection{Comunicación Dialogue}
+En la comunicación de tipo Dialogue, el cliente envía un evento al servidor, esperando una respuesta de vuelta. Este tipo de comunicación es más compleja de implementar que las otras, pero su uso en CoWordle sigue siendo muy simple.
+
+\begin{mytypescript}[float={!h},caption={Ejemplo de uso del método \textit{dialogue}.},label={alg:etiqueta}]
+	const { localPlayer, players, hostPlayer } = await this.socket.dialogue("setup", {
+		playerName: this.localPlayer.name,
+		roomCode: this.roomCode,
+	});
+\end{mytypescript}
+
+Como se puede ver en el ejemplo, para usar un evento de tipo Dialogue tan solo tenemos que llamar al método \textit{dialogue} del wrapper. El primer argumento define el evento que vamos a emitir y sobre el que vamos a esperar la respuesta. El segundo argumento describe los datos que vamos a enviar. Como respuesta obtendremos una \textit{promesa} de la respuesta que recibiremos del servidor cuando este responda.
+
+Para declarar un evento del tipo Dialogue, se utiliza una sintaxis muy cómoda, que permite diferenciar en un solo vistazo los tipos que vamos a enviar y los tipos que vamos a recibir.
+
+\begin{mytypescript}[float={!h},caption={Ejemplo de declaración del tipo de evento Dialogue.},label={alg:etiqueta}]
+	export type WebSocketDialogueEvent = {
+		...
+		setup: (args: { roomCode: string; playerName: string }) => {
+			players: InitialPlayerInfoDto[];
+			hostPlayer: InitialPlayerInfoDto;
+			localPlayer: InitialPlayerInfoDto;
+			roomState: RoomState;
+		};
+		...
+	};
+\end{mytypescript}
+
+El evento se declara como una función donde los argumentos son los datos a enviar a servidor, y cuya respuesta son los tipos que vamos a recibir del servidor. 
+
+Como explicaba anteriormente, la implementación es un poco más compleja que en los tipos de comunicación anteriores.
+
+\begin{mytypescript}[float={!h},caption={Implementación del método \textit{dialogue}.},label={alg:etiqueta}]
+	async dialogue<TEvent extends EventName<WebSocketDialogueEvent>, TEventMethod extends WebSocketDialogueEvent[TEvent]>(
+	event: TEvent,
+	params: Parameters<TEventMethod>[0],
+	eventResponse?: string
+	): Promise<ReturnType<WebSocketDialogueEvent[TEvent]>> {
+		return new Promise((resolve, reject) => {
+			this.socket.emit(event, params);
+																																																
+			this.socket.on<string>(eventResponse || event, (result) => {
+				this.socket.off(event);
+				resolve(result);
+			});
+																																																
+			setTimeout(() => reject("timeout"), 10000);
+		});
+	}
+\end{mytypescript}
+
+El primer parámetro coincide con los de los otros tipos de comunicación, volviendo a usar el \textit{TEvent}. El segundo argumento extrae los parámetros de la función declarada como evento. El valor de retorno del método se define como una \textit{promesa} del valor de retorno definido en función del evento.
+
+Con esta implementación estamos manteniendo la sencillez de uso que teníamos con los otros tipos de comunicación, pero estamos creando una comunicación más clásica, donde el cliente y el servidor se comunican como si fuera una petición HTTP normal.

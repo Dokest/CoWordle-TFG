@@ -22,6 +22,7 @@
 	"latex-workshop.view.pdf.viewer": "tab",
 	"latex-workshop.docker.image.latex": "tianon/latex",
 	"[latex]": {
-		"editor.wordWrap": "on"
+		"editor.wordWrap": "on",
+		"editor.autoIndent": "none",
 	},
 }
