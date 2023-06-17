@@ -31,14 +31,28 @@ En este momento la aplicación ya se encontraba con madurez suficiente para que 
 
 
 \section{Arquitectura general}
-El proyecto está dividido en dos repositorios, por un lado está la aplicación web (webapp), que se encarga de realizar la lógica de presentación, así como el game loop, y por otro lado tenemos el servidor de backend, donde va toda la lógica de websockets en la parte de servidor.
+El proyecto está dividido en dos repositorios, por un lado está la aplicación web (webapp), que se encarga de realizar la lógica de presentación, así como el \textit{game loop}, y por otro lado tenemos el servidor de backend, donde va toda la lógica de websockets en la parte de servidor.
 
 La comunicación entre aplicaciones se realiza mediante peticiones HTTP y websockets, para ello se utiliza la librería estándar de Javascript proporcionada por el navegador, la librería estándar de Node.js, la librería estándar de Deno y la librería Socket.io.
 
-
-\begin{center}
+\begin{figure}[H]
+	\centering
 	\includegraphics[clip=true,width=0.5\textwidth]{./diagrams/general_arch.pdf}
-\end{center}
+	\caption{Ejemplo sencillo de comunicación entre aplicaciones.}
+	\label{fig:ex_app_comms}
+\end{figure}
+
+El usuario siempre interactúa directamente con la aplicación web, y es esta la que realizará llamadas al servidor.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true,width=0.75\textwidth]{./diagrams/overall_communications.pdf}
+	\caption{Ejemplo de comunicación a todos los usuarios.}
+	\label{fig:ex_comms}
+\end{figure}
+
+Al ser una aplicación en tiempo real, es necesario que todos los usuarios estén al tanto de toda la información relevante para la partida. Como se puede ver en la figura \ref{fig:ex_comms}, cada vez que surge una interacción por parte de un usuario, como la inserción de una nueva palabra en el tablero, el servidor es capaz de procesar esta información y enviar a todos los usuarios el resultado relevante para ellos de la acción del otro jugador.
+
 
 \subsection{Aplicación web}
 La aplicación web es la herramienta con la cual el usuario interactúa, permite a este realizar todas las acciones necesarias utilizando un navegador web.
@@ -48,9 +62,44 @@ Está desarrollada utilizando SvelteKit para la realización de la lógica, y Ta
 El flujo principal que sigue el usuario para poder jugar una partida comienza abriendo la página web de la aplicación web, después, creará o se unirá a una partida ya creada, cuando todos los jugadores estén listos, el creador de la partida le dará al botón de comenzar, y después de una cuenta atrás, a todos los jugadores se les presentará un tablero de Wordle donde pondrán ir escribiendo sus intentos. Si alguno de los jugadores descubre la palabra, todos los jugadores verán una nueva pantalla con el nombre de la persona ganadora, en esta nueva pantalla, los jugadores pueden elegir entre salir de la partida o volver a jugar. En caso de que ningún jugador consiga ganar, se les presentará a todos una pantalla en el que se mostrará la palabra objetivo, y las mismas opciones que en el caso de haber habido un ganador.
 
 
-\begin{center}
+\begin{figure}[H]
+	\centering
 	\includegraphics[clip=true,width=\textwidth]{./diagrams/webapp_flow.pdf}
-\end{center}
+	\caption{Diagrama de flujo de la aplicación web.}
+	\label{fig:web_diagram}
+\end{figure}
+
+\subsection{Diseño visual}
+El diseño visual de la aplicación está inspirado por el diseño original de Wordle tal como se puede ver en la aplicación oficial de Wordle.
+
+En CoWordle se están utilizando diferentes tonalidades para representar los estados de las palabras. Para ver si los colores eran claros y entendibles, se escogió a varios voluntarios que afirman no encontrar mucha diferencia con los significados de los colores oficiales.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true,width=\textwidth]{./images/design/cowordle_desktop.png}
+	\caption{Aplicación web en vista escritorio.}
+	\label{fig:web_desktop}
+\end{figure}
+
+Los colores elegidos utilizan tonalidades con colores intensos para poder diferenciarlos con el fondo oscuro. A lo largo de toda la aplicación se reutilizan los mismos colores, creando una sensación de marca.
+
+Los bordes redondeados hacen más amigable la aplicación, y sigue con tendencias modernas que utilizan grandes empresas como Microsoft, por ejemplo, con los bordes de ventana redondeados de Windows 11.
+
+El tablero dispone de un teclado para indicar las letras usadas, oscureciendo aquellas que no se encuentran en la palabra, marcando verde aquellas que se encuentran en la posición correcta y naranjas aquellas que no se encuentran en la posición correcta. El teclado es además completamente funcional.
+
+Toda la aplicación es \textit{responsive}, lo cual significa que es adaptable para cualquier pantalla de cualquier dispositivo, por ejemplo, asi es que como se ve la aplicación en un telefono movil de la compañia Apple.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true,width=0.75\textwidth]{./images/design/cowordle_iphone.png}
+	\caption{Aplicación web en un dispositivo móvil.}
+	\label{fig:web_iphone}
+\end{figure}
+
+Como se puede ver, en lugar del teclado único de cada teléfono móvil, se utiliza el teclado interno de CoWordle, lo cual permite mantener la información que el jugador recibe independientemente del dispositivo.
+
+Además, todas las vistas de la aplicación cuentan con un botón de información que explica brevemente cómo se utiliza la aplicación.
+
 
 \subsubsection{Comunicación websocket}
 La comunicación websocket ha sido el punto de aprendizaje principal, según se fueron desarrollando las diferentes partes para el trabajo, se fue definiendo lo que acabó siendo una serie de reglas sobre la comunicación diferenciando estas en tres tipos de comunicación diferentes.
@@ -189,7 +238,7 @@ El wrapper expone un método \textit{on}, que permite añadir un callback cuando
 \begin{mytypescript}[float={!h},caption={Uso de eventos websocket IN.},label={alg:ws_in_usage}]
 	this.socket.on("player_connected", ({ newPlayer }) => {
 		this.addPlayer(newPlayer);
-																														
+																																																																		
 		this.notifies.playersUpdated.broadcast(this.players);
 	}); 
 \end{mytypescript}
@@ -300,12 +349,12 @@ Como explicaba anteriormente, la implementación es un poco más compleja que en
 	): Promise<ReturnType<WebSocketDialogueEvent[TEvent]>> {
 		return new Promise((resolve, reject) => {
 			this.socket.emit(event, params);
-																																																
+																																																																																																						
 			this.socket.on<string>(eventResponse || event, (result) => {
 				this.socket.off(event);
 				resolve(result);
 			});
-																																																
+																																																																																																						
 			setTimeout(() => reject("timeout"), 10000);
 		});
 	}
