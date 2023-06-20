@@ -21,7 +21,7 @@ Una de las principales diferencias entre Node.js y otros sistemas como el motor 
 
 En 2022 y según la encuesta de StackOverflow en la que participaron más de cuarenta y cinco mil personas, Node.js es la tecnología web más usada entre desarrolladores profesionales siendo usada por un 46.31\% de estos.
 
-\subsubsection{¿Cómo se ha utilizado?}
+\subsubsection{¿Cómo se ha utilizado Node.js?}
 Aunque Node.js no se ha utilizado directamente en la práctica, sí que ha permitido indirectamente que el resto de herramientas hayan podido ser utilizadas, especialmente SvelteKit.
 
 
@@ -34,7 +34,7 @@ Además, Deno incluye mejoras como el manejo automático de dependencias, una in
 
 Deno es capaz de ejecutar código Typescript directamente utilizando un compilador internamente, sin necesidad de generar archivos Javascript por parte del desarrollador, y sin generar archivos en el proyecto resultado de la compilación.
 
-\subsubsection{¿Cómo se ha usado?}
+\subsubsection{¿Cómo se ha utilizado Deno?}
 Deno no estaba planteado como herramienta cuando se comenzo el trabajo, pero despues de necesitar hacer tests para la parte de servidor de WebSockets, y buscar posibles herramientas de testeo para Node.js, surgió la idea de cambiar esta parte de Node.js por Deno.
 
 Como ya se ha comentado, Deno cuenta con su propio corredor de tests, y además, es casi completamente compatible con Node.js, migrar la aplicación fue un trabajo de un par de horas, en las que simplemente hubo que cambiar la forma de inicializar la aplicación para ajustarse con el sistema de Deno.
@@ -88,3 +88,10 @@ Playwraight es el framework para testear componentes recomendado por SvelteKit, 
 
 \subsubsection{¿Cómo se ha usado Playwraight?}
 Playwraight se ha usado para hacer tests para componentes, y parcialmente para flujos. Hacer tests de flujos completos ha sido más complejo, ya que es difícil interceptar las comunicaciones de Websockets.
+
+\section{Metodología}
+Este trabajo ha seguido una metodología iterativa e incremental en espiral, en la cual el tutor y el alumno se reúnen de manera periódica y hacen revisión de objetivos y progreso.
+
+En cada reunión se hacen propuestas de mejora, y estas se convierten en objetivos para la siguiente revisión. Poco a poco el desarrollo del trabajo se fue materializando, empezando con los pasos más básicos como tener una plantilla sobre la que poder ir probando desarrollos, pasando por el aprendizaje de la tecnología de WebSockets, como el arreglo de bugs que han ido surgiendo a lo largo del tiempo.
+
+La metodología escogida ha funcionado muy bien para el tipo de proyecto, la progresión iterativa y en fragmentos ha permitido que la práctica se haya desarrollado lentamente, y con la atención puesta en cada fragmento de desarrollo, sin llegar a encontrarse con un gran panel de tareas que pueda resultar abrumador, además, el planteamiento a futuro ha permitido que la aplicación haya crecido adecuadamente, sin necesidad de realizar grandes cambios.
