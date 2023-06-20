@@ -1,8 +1,38 @@
-En este capítulo se detallan las conclusiones derivadas del TFG y la propuesta de posibles trabajos futuros.
+Según lo que se planteó para el desarrollo de la aplicación, se han llegado a alcanzar la mayoría de los objetivos, incluso aquellos que parecían más complejos.
 
-Las citas del texto Autor \cite{giaquinta}, Autor \cite{fortune}, Autor \cite{fortuneB}, Autor \cite{mitchell} y Autor \cite{morrey} deben ir referenciadas en la bibliografia.
+\section{Resolución de objetivos}
+
+\subsection{Aprendizaje websocket}
+Este objetivo ha sido cumplido, no solo se han llegado a entender las diferencias entre la comunicación HTTP y websockets, si no que se han construido herramientas y sistemas sobre la comunicación websocket que han permitido realizar el trabajo de manera más sencilla y mantenible.
+
+\subsection{Creación de un juego en una aplicación web}
+Este objetivo ha sido cumplido, el juego se considera completo pero mejorable. El \textit{game loop} está cerrado y es completamente jugable.
+
+Aunque hubiera sido posible añadir más opciones de juego, y más mejoras.
+
+\subsection{Independencia de dispositivos}
+Se ha conseguido crear una aplicación a la que se puede acceder desde ordenadores de sobremesa, portátiles, tablets y móviles. Además, la aplicación se ha diseñado de manera que en todos los dispositivos se dispone de la misma información.
+
+\subsection{Despliegue}
+Se han conseguido \textit{Dockerizar} ambas aplicaciones y se provee de un archivo docker-compose que permite levantar ambas de manera sencilla. Se ha puesto especial cuidado en que la aplicación se pueda lanzar en cualquier entorno con independencia de las IPs de los equipos.
+
+\section{Futuras ampliaciones}
+A futuro la aplicación tiene varias posibles mejoras:
+
+\begin{itemize}
+	\item La creación de un sistema de leaderboard global, para poder comparar tus resultados con los de jugadores de todo el mundo. Este desarrollo se llegó a plantear en una de las revisiones con el tutor, pero por falta de tiempo no pudo llegar a desarrollarse.
+	\item Añadir más listas de palabras para jugar, podría haber partidas en más lenguajes, o incluso partidas temáticas. El sistema de creación de listas es adaptable, y está preparado para introducir más listas en el futuro sin mucho trabajo.
+	\item Incluir CI/CD, que por falta de tiempo no se ha llegado a terminar.
+	\item Añadir un tutorial para personas que no conozcan el juego de Wordle.
+	\item Estudiar la accesibilidad de la página, y mejorarla donde sea necesario.
+\end{itemize}
 
 
-\section{Texto de relleno}
+\section{Conclusiones personales}
+El trabajo me ha supuesto un gran esfuerzo, un curso entero pensando, programando y trabajando en un único proyecto parece un gran cometido para cualquier estudiante de grado.
 
-\lipsum[1-18]
+Estoy muy contento con el resultado, aunque una vez terminado y analizado, existen muchos sitios donde es mejorable tanto el código, como la arquitectura. Dicho esto, estoy satisfecho con lo bien que han salido para ser la primera vez que intento hacer un juego en el navegador. También estoy muy contento con el aspecto visual, creo que ha quedado resultón, y sorprendentemente mejor de lo que me esperaba.
+
+También estoy muy contento, no solo con todo lo aprendido en el área de la programación, si no también con lo aprendido escribiendo este documento. Es la primera vez que tengo que analizar a fondo un trabajo, y he aprendido mucho más de lo que me esperaba haciéndolo.
+
+Con todo lo aprendido, cada vez que quiera emprender un nuevo proyecto lo prepararé de manera diferente, utilizando todo lo aprendido en este.
