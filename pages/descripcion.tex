@@ -238,7 +238,7 @@ El wrapper expone un método \textit{on}, que permite añadir un callback cuando
 \begin{mytypescript}[float={!h},caption={Uso de eventos websocket IN.},label={alg:ws_in_usage}]
 	this.socket.on("player_connected", ({ newPlayer }) => {
 		this.addPlayer(newPlayer);
-																																																																		
+																								
 		this.notifies.playersUpdated.broadcast(this.players);
 	}); 
 \end{mytypescript}
@@ -349,12 +349,12 @@ Como explicaba anteriormente, la implementación es un poco más compleja que en
 	): Promise<ReturnType<WebSocketDialogueEvent[TEvent]>> {
 		return new Promise((resolve, reject) => {
 			this.socket.emit(event, params);
-																																																																																																						
+
 			this.socket.on<string>(eventResponse || event, (result) => {
 				this.socket.off(event);
 				resolve(result);
 			});
-																																																																																																						
+
 			setTimeout(() => reject("timeout"), 10000);
 		});
 	}
@@ -363,3 +363,236 @@ Como explicaba anteriormente, la implementación es un poco más compleja que en
 El primer parámetro coincide con los de los otros tipos de comunicación, volviendo a usar el \textit{TEvent}. El segundo argumento extrae los parámetros de la función declarada como evento. El valor de retorno del método se define como una \textit{promesa} del valor de retorno definido en función del evento.
 
 Con esta implementación estamos manteniendo la sencillez de uso que teníamos con los otros tipos de comunicación, pero estamos creando una comunicación más clásica, donde el cliente y el servidor se comunican como si fuera una petición HTTP normal.
+
+
+\section{Pruebas}
+
+Como el proyecto está dividido en dos repositorios distintos con tecnologias distintas, es necesario ver como se han realizado los tests en ambos repositorios.
+
+\subsection{Webapp}
+Para la webapp se han realizado pruebas principalmente de componentes, para ello se ha utilizado Playwright. Como se ha explicado en la sección de tecnologías, Playwright es la librería recomendada para el testeo de componentes.
+
+Playwright utiliza un navegador \textit{headless} internamente para comprobar que los componentes están funcionando. Además, permite seleccionar qué tecnología de navegador se quiere probar. Para CoWordle se realizan tests en todas las tecnologías principales, Firefox, Chromium y Webkit.
+
+Los tests realizados incluyen comprobaciones para ver si los componentes son montados correctamente en la pantalla, si los componentes muestran los textos correctamente y si los colores, especialmente en los colores de juego, se muestran correctamente.
+
+Un ejemplo de test donde se ha comprobado si el componente se monta correctamente, se puede observar en el archivo tests/components/word.test.ts:
+
+\begin{mytypescript}[float={!h},caption={Ejemplo test visibilidad componente.},label={alg:test_visibility}]
+	test("component is displayed correctly", async ({ mount }) => {
+		const comp = await mount(Word, {
+			props: {
+				word: "Hello",
+				length: "Hello".length,
+			},
+		});
+
+		await expect(comp).toBeVisible();
+	});
+\end{mytypescript}
+
+En este test se puede comprobar que primero se monta el componente con los props necesarios, y después se realiza la comprobación de que el componente sea visible.
+
+Un ejemplo de test donde se comprueba el contenido textual de un componente se puede ver en el mismo archivo que el test anterior.
+
+\begin{mytypescript}[float={!h},caption={Ejemplo test con texto.},label={alg:test_text}]
+	test("contents are displayed correctly", async ({ mount }) => {
+		const comp = await mount(Word, {
+			props: {
+				word: "Hello",
+				length: "Hello".length,
+			},
+		});
+
+
+		await expect(comp).toContainText("Hello");
+	});
+\end{mytypescript}
+
+En este test se puede comprobar cómo se monta el componente y se prueba que el texto interno del componente coincide con lo esperado.
+
+Un ejemplo de test donde se comprueba que los colores de las letras se puede volver a ver en el archivo ya visto.
+
+\begin{mytypescript}[float={!h},caption={Ejemplo test colores.},label={alg:test_colors}]
+	test("colors are shown correctly", async ({ mount }) => {
+		const word = "SUN";
+
+
+		const comp = await mount(Word, {
+			props: {
+				word,
+				length: word.length,
+				results: [WordlePoints.Exact, WordlePoints.InWord, WordlePoints.Missing]
+			},
+		});
+
+
+		const innerLetters = await comp.getByRole("paragraph").all();
+
+
+		await expect(innerLetters[0]).toHaveClass(/letter-exact/);
+		await expect(innerLetters[1]).toHaveClass(/letter-in-word/);
+		await expect(innerLetters[2]).toHaveClass(/letter-missing/);
+	});
+\end{mytypescript}
+
+En este ejemplo se monta el componente, con las letras a mostrar y los resultados que deberían de mostrar los colores de las letras CoWordle. Una vez montado el componente, se extraen todas las letras de este, y se comprueba que cada letra tenga la clase HTML correcta. Se comprueban las clases HTML porque internamente a cada clase HTML le corresponde un color CSS. Si en algún momento se decidiera cambiar los colores, no habría que modificar los tests, ya que en ningún momento se comprueban colores concretos.
+
+Para poder ejecutar los tests en local, es necesario utilizar el comando \ref{alg:execute_test_playwright}.
+
+\begin{mypython}[float={!t},caption={Comando para ejecutar los tests de Playwright},label={alg:execute_test_playwright}]
+	$ npm run test-ct
+\end{mypython}
+
+Una vez ejecutado el comando, Playwright comenzará a realizar los tests, una vez haya terminado nos abrirá una página web donde mostrará los resultados.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true, width=\textwidth]{images/tests/playwright_web.png}
+	\caption{Imagen resultado de realizar los tests.}
+	\label{fig:playwright_tests_result}
+\end{figure}
+
+En esta página podemos inspeccionar cada test realizado, pudiendo ver las comprobaciones que se han realizado en cada uno, y en caso de haber fallado, la razón del error.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true, width=\textwidth]{images/tests/playwright_one_test.png}
+	\caption{Inspección de un test en Playwright.}
+	\label{fig:playwright_test_result}
+\end{figure}
+
+\subsubsection{Problemas encontrados}
+Playwright puede llegar a ser complejo de instalar según sea el sistema del usuario a ejecutar los tests. Para la realización de esta práctica se han dedicado varias horas únicamente a conseguir que Playwright consiga ejecutar los tests en el entorno en el cual se ha realizado esta (WSL 2).
+
+Además, en ocasiones Playwright falla iniciando el contexto del navegador y no llega a ejecutar algunos tests correctamente.
+
+\subsection{Servidor de Websockets}
+Los tests para el servidor de Websockets se han centrado en el testeo de la comprobación de palabras para la generación de resultados Wordle.
+
+Con la flexibilidad de testeo que ofrece Deno, se ha programado un sistema que es capaz de generar tests unitarios para las palabras que se requiera (\ref{alg:deno_tests}). Para ello, se genera un test con varios steps (pasos), cada step es una nueva palabra para probar, todo ello es posible generando una estructura de datos que almacene el intento del jugador, y el resultado que se debería de obtener tras el intento. Después, tan solo es necesario recorrer la estructura de datos generando los steps \ref{alg:deno_tests_2}.
+
+\begin{mytypescript}[float={!h},caption={Implementación del sistema de creación de test automáticos.},label={alg:deno_tests}]
+	const validations: WordTest[] = [
+		{ solution: "TESTS", words: [
+			{
+				word: "TESTS",
+				expected: [2, 2, 2, 2, 2],
+			},
+			{
+				word: "TESTT",
+				expected: [2, 2, 2, 2, 0],
+			},
+			{
+				word: "SPLIT",
+				expected: [1, 0, 0, 0, 1],
+			},
+			{
+				word: "SPLTT",
+				expected: [1, 0, 0, 2, 1],
+			},
+			{
+				word: "STLAT",
+				expected: [1, 1, 0, 0, 1],
+			},
+			{
+				word: "ATTAT",
+				expected: [0, 1, 1, 0, 0],
+			},
+			{
+				word: "AAAAA",
+				expected: [0, 0, 0, 0, 0],
+			},
+			]
+		}
+	];
+\end{mytypescript}
+
+\begin{mytypescript}[float={!h},caption={Implementación del sistema de creación de test automáticos.},label={alg:deno_tests_2}]
+	for await (const validation of validations) {
+		for await (const word of validation.words) {
+			await test.step({
+				name: "${validation.solution} -> ${word.word}",
+				fn: () => {
+					const result = validateWord(word.word, validation.solution);
+					assertEquals(result, word.expected);
+				},
+			});
+		}
+	}
+\end{mytypescript}
+
+Tras ejecutar este test obtenemos los siguientes resultados:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[clip=true, width=0.75\textwidth]{images/tests/deno_test_wordle.png}
+	\caption{Resultado del test de validación de palabras.}
+	\label{fig:deno_test}
+\end{figure}
+
+Como se puede comprobar, siguiendo la estructura de datos, cada step ejecutado ha comprobado si el resultado tras ejecutar la función \textit{validateWord} ha retornado el resultado esperado o no. Además, nos muestra por pantalla todos los intentos que se han realizado.
+
+\subsubsection{Problemas encontrados}
+Deno es un entorno para ejecutar Typescript muy reciente y todavía no dispone de todas las mejoras para realizar tests que pueden llegar a ofrecer sistemas más consolidados, como sistemas para hacer mocks, este problema es aliviado por la flexibilidad ofrecida por Javascript, que permite realizar pseudo-mocks de manera manual.
+
+Aun así, la experiencia de testeo con Deno es satisfactoria.
+
+\section{Distribución y despliegue}
+
+Existen varias maneras de ejecutar la aplicación, la opción más sencilla es utilizar Docker, aunque también está disponible de levantar la aplicación desde el código directamente.
+
+\subsection{Utilizando Docker}
+Utilizando Docker, podemos levantar la aplicación al completo, tanto la webapp, como el servidor de websockets. Esta es la opción más sencilla y la manera recomendada de levantar la aplicación para su despliegue.
+
+Para levantar la aplicación utilizando Docker necesitamos tener Docker y Docker Compose instalado. Una vez instalado podemos utilizar el siguiente archivo docker-compose.yaml, este archivo instruye a Docker como queremos que levante la aplicación.
+
+En el archivo se muestra que se van a desplegar dos aplicaciones, la primera es la webapp, la segunda es el servidor de websockets. Además, se crea una red entre ambas aplicaciones que facilita la comunicación entre estas.
+
+Una vez dispongamos de un archivo \textit{docker-compose.yaml}, podemos utilizar el siguiente comando para levantar la aplicación.
+
+\begin{mypython}[float={!h},caption={Comando para levantar todas las aplicaciones utilizando Docker.},label={sh:run_docker}]
+	$ docker compose up
+\end{mypython}
+
+Si queremos levantar la aplicación en segundo plano, podemos utilizar el siguiente comando en su lugar.
+
+\begin{mypython}[float={!h},caption={Comando para levantar todas las aplicaciones utilizando Docker en segundo plano.},label={sh:run_docker_bg}]
+	$ docker compose up -d
+\end{mypython}
+
+En la documentación oficial de Docker Compose explican más opciones para utilizar Docker Compose \cite{DockerComposeDocs}, pero con los comandos mostrados anteriormente es suficiente para levantar CoWordle.
+
+Una vez esté levantada la aplicación, podemos utilizar la URL \href{http://localhost:4173/} para entrar en la aplicación desde cualquier navegador.
+
+\subsection{Utilizando Git o GitHub}
+También está disponible la opción de levantar la aplicación desde el repositorio de GitHub, para ello será necesario descargar el código de ambas aplicaciones.
+
+La primera opción es la recomendada para personas que no conozcan la tecnología Git. Tan solo es necesario seguir la documentación oficial de GitHub, y descargar el código de ambos repositorios.
+
+\begin{itemize}
+	\item La \textbf{Aplicacion web} se encuentra en el repositorio de GitHub \href{https://github.com/Dokest/cowordle-webapp}.
+	\item El \textbf{Servidor websockets} se encuentra en el repositorio de GitHub \href{https://github.com/Dokest/cowordle-ws}.
+\end{itemize}
+
+También es posible descargar el código utilizando git con los siguientes comandos:
+
+\begin{mypython}[float={!h},caption={Comandos git para clonar los repositorios.},label={sh:git_clone_repos}]
+	$ git clone https://github.com/Dokest/cowordle-ws.git
+	$ git clone https://github.com/Dokest/cowordle-webapp.git
+\end{mypython}
+
+Una vez descargado el código, tenemos que levantar ambas aplicaciones:
+Para levantar la webapp, será necesario utilizar el comando:
+
+\begin{mypython}[float={!h},caption={Comando para levantar la webapp.},label={sh:run_webapp}]
+	$ npm run dev
+\end{mypython}
+
+Para levantar el servidor de websockets, será necesario utilizar el comando:
+
+\begin{mypython}[float={!h},caption={Comando para levantar el servidor de Websockets.},label={sh:run_ws_server}]
+	$ deno task dev
+\end{mypython}
+
+Una vez levantadas ambas aplicaciones, podemos acceder a CoWordle utilizando la URL \href{http://localhost:4173/}.
