@@ -2,7 +2,7 @@
 
 
 \subsection{Typescript}
-Typescript es un lenguaje desarrollado por Microsoft que se compila a Javascript, las principales funcionalidades que añade Typescript son, un robusto sistema de tipados y un completo sistema de genéricos.
+Typescript \cite{typescript_docs} es un lenguaje desarrollado por Microsoft que se compila a Javascript, las principales funcionalidades que añade Typescript son, un robusto sistema de tipados y un completo sistema de genéricos.
 
 Typescript reduce los tiempos de desarrollo permitiendo detectar errores de tipados mientras programas, además, ayuda al desarrollador utilizando autocompletado sobre miembros de clases, variables y funciones.
 
@@ -13,20 +13,20 @@ Además, en el trabajo se han creado sistemas específicos de ayuda sobre los ti
 
 
 \subsection{Node.js}
-Node es probablemente una de las creaciones más influyentes en el mundo web, creada por Ryan Dahl en 2009, y permite ejecutar código Javascript en el lado del servidor, sin necesidad de usar un navegador.
+Node \cite{nodejs_docs} es probablemente una de las creaciones más influyentes en el mundo web, creada por Ryan Dahl en 2009, y permite ejecutar código Javascript en el lado del servidor, sin necesidad de usar un navegador.
 
 Node utiliza internamente el motor de Javascript (y WebAssembly) V8 desarrollado para Chromium por Google.
 
 Una de las principales diferencias entre Node.js y otros sistemas como el motor de PHP, es que no es necesario levantar un proceso para cada llamada, en su lugar, Node.js es capaz de ir recibiendo llamadas e irlas respondiendo de manera concurrente, esto le permite responder mucho más rápido y eficientemente que otros sistemas.
 
-En 2022 y según la encuesta de StackOverflow en la que participaron más de cuarenta y cinco mil personas, Node.js es la tecnología web más usada entre desarrolladores profesionales siendo usada por un 46.31\% de estos.
+En 2022 y según la encuesta de StackOverflow \cite{so_survey} en la que participaron más de cuarenta y cinco mil personas, Node.js es la tecnología web más usada entre desarrolladores profesionales siendo usada por un 46.31\% de estos.
 
 \subsubsection{¿Cómo se ha utilizado Node.js?}
 Aunque Node.js no se ha utilizado directamente en la práctica, sí que ha permitido indirectamente que el resto de herramientas hayan podido ser utilizadas, especialmente SvelteKit.
 
 
 \subsection{Deno}
-Deno es una tecnología open-source alternativa a Node, creada por el mismo desarrollador que creó Node.js, Ryan Dahl, que presentó Deno en una charla llamada “10 things I Regret About Node.js” en la conferencia de Javascript que se estaba celebrando en Europa.
+Deno \cite{deno_docs} es una tecnología open-source alternativa a Node, creada por el mismo desarrollador que creó Node.js, Ryan Dahl, que presentó Deno en una charla llamada “10 things I Regret About Node.js” en la conferencia de Javascript que se estaba celebrando en Europa.
 
 Los principales cambios respecto a Node.js son la incorporación de Typescript sin herramientas adicionales, y la incorporación de un sistema de permisos muy estricto que impide la ejecución de código malicioso al usar librerías externas.
 
@@ -44,12 +44,12 @@ Como el creador de Deno es también el creador de Node.js, Ryan Dahl de manera c
 
 
 \subsection{SvelteKit}
-SvelteKit es una tecnología para el desarrollo front-end y back-end desarrollada por Rich Harris.
+SvelteKit \cite{sveltekit_docs} es una tecnología para el desarrollo front-end y back-end desarrollada por Rich Harris.
 
 SvelteKit es la unión de dos tecnologías, por una lado Svelte, que es un framework de desarrollo front-end, alternativo a React, Angular o Vue. Y por otro lado, la parte del nombre Kit viene de la incorporación a Svelte de un sistema de routing y de poder ejecutar código en back-end, también habilita la posibilidad de hacer SSR (Server Side Rendering), al igual que Next permite hacer SSR para React, o Nuxt permite hacer SSR para Vue.
 
 \subsubsection{Svelte}
-Svelte es un compilador de componentes web que permite al desarrollador programar la vista, ejecución y estilado de un componente en un solo archivo, y tras ser compilado, devuelve código que manipula el DOM y es reactivo a cambios en la información presentada.
+Svelte \cite{svelte_docs} es un compilador de componentes web que permite al desarrollador programar la vista, ejecución y estilado de un componente en un solo archivo, y tras ser compilado, devuelve código que manipula el DOM y es reactivo a cambios en la información presentada.
 
 Svelte, a diferencia de React o Vue, no necesita de un framework en runtime para funcionar, el compilador devuelve el código Javascript necesario para mostrar la información necesaria y manejar la reactividad, sin necesidad de un shadow-DOM, esto disminuye la cantidad de código que hay que enviar al cliente en la petición inicial, lo que mejora el rendimiento y disminuye el “time to interactive”.
 
@@ -64,7 +64,7 @@ SvelteKit es considerada como la manera más sencilla y rápida de desarrollar u
 SvelteKit ha fundamentado la base que ha permitido añadir reactividad a la aplicación de manera sencilla, su cómoda sintaxis facilita el trabajar con los datos, especialmente aquellos que requieren de reactividad.
 
 \subsubsection{Tailwind}
-Tailwind es un framework de CSS que permite utilizar la mayor parte del poder de CSS directamente desde la plantilla HTML, además, es compatible con el sistema de componentes de Svelte.
+Tailwind \cite{tailwind_docs} es un framework de CSS que permite utilizar la mayor parte del poder de CSS directamente desde la plantilla HTML, además, es compatible con el sistema de componentes de Svelte.
 
 Tailwind funciona utilizando clases HTML, que tienen una representación en el framework de CSS, esto consigue que con muy poquito esfuerzo tengamos una página lista.
 
@@ -84,7 +84,7 @@ Docker es una plataforma para desarrollar y desplegar aplicaciones de todo tipo,
 Cada aplicación de Docker se puede subir a DockerHub, la plataforma para compartir aplicaciones Docker oficial, a través de esta plataforma es posible desplegar tu aplicación en cualquier computadora con tan solo saber el nombre del repositorio y las credenciales (en caso de ser necesarias).
 
 \subsection{Playwraight}
-Playwraight es el framework para testear componentes recomendado por SvelteKit, es un software muy capaz que permite con muy poco trabajo y con una sintaxis muy sencilla, hacer testeo determinista sobre los componentes web. En numerosos frameworks de testeo de páginas web hay problemas para saber cuando la página web ha cargado los componentes, Playwraight provee de sistemas asíncronos (basados en Promesas) para esperar a que los componentes hayan cargado sin complicar el código.
+Playwraight \cite{playwright_docs} es el framework para testear componentes recomendado por SvelteKit, es un software muy capaz que permite con muy poco trabajo y con una sintaxis muy sencilla, hacer testeo determinista sobre los componentes web. En numerosos frameworks de testeo de páginas web hay problemas para saber cuando la página web ha cargado los componentes, Playwraight provee de sistemas asíncronos (basados en Promesas) para esperar a que los componentes hayan cargado sin complicar el código.
 
 \subsubsection{¿Cómo se ha usado Playwraight?}
 Playwraight se ha usado para hacer tests para componentes, y parcialmente para flujos. Hacer tests de flujos completos ha sido más complejo, ya que es difícil interceptar las comunicaciones de Websockets.
