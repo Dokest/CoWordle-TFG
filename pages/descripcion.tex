@@ -1,4 +1,7 @@
 \section{Requisitos}
+
+\tutor{Aunque el enfoque es interesante, no estas poniendo los requisitos de la aplicación, sino los objetivos del trabajo. Tienes que distinguir entre requisitos funcionales y no funcionales. Ejemplo: RF1. Como usuario quiero poder crear una sala ... RNF1. El sistema debe ser fácil de usar. Puedes orientar en que en cada fase se iban originando nuevos requisitos o eran modificados.}
+
 Como la metodología de desarrollo ha sido iterativa, algunos de los requisitos han ido surgiendo durante el desarrollo de la aplicación, e inclusos algunos requisitos han cambiado según se han ido encontrando o destruyendo barreras. Los requisitos iniciales, que se plantearon en la primera reunión eran:
 
 Desarrollar una aplicación para cuatro jugadores en las que compiten para encontrar la palabra. En este momento ya se ha definido que es un juego variante del Wordle, además, por simplificar el desarrollo en estos momentos iniciales, se ha decidido guardar la información sobre los jugadores en memoría, sin utilizar ninguna base de datos.
@@ -38,7 +41,7 @@ La comunicación entre aplicaciones se realiza mediante peticiones HTTP y websoc
 \begin{figure}[H]
 	\centering
 	\includegraphics[clip=true,width=0.5\textwidth]{./diagrams/general_arch.pdf}
-	\caption{Ejemplo sencillo de comunicación entre aplicaciones.}
+	\caption{Diagrama de comunicación entre aplicaciones.}
 	\label{fig:ex_app_comms}
 \end{figure}
 
@@ -47,7 +50,7 @@ El usuario siempre interactúa directamente con la aplicación web, y es esta la
 \begin{figure}[H]
 	\centering
 	\includegraphics[clip=true,width=0.75\textwidth]{./diagrams/overall_communications.pdf}
-	\caption{Ejemplo de comunicación a todos los usuarios.}
+	\caption{Diagrama de comunicación a todos los usuarios.}
 	\label{fig:ex_comms}
 \end{figure}
 
@@ -59,13 +62,14 @@ La aplicación web es la herramienta con la cual el usuario interactúa, permite
 
 Está desarrollada utilizando SvelteKit para la realización de la lógica, y Tailwind para dar color y estilo.
 
+\tutor{Referencia la figura \ref{fig:web_diagram}. TODAS las figuras de la memoria deben estar referenciadas en el texto}
 El flujo principal que sigue el usuario para poder jugar una partida comienza abriendo la página web de la aplicación web, después, creará o se unirá a una partida ya creada, cuando todos los jugadores estén listos, el creador de la partida le dará al botón de comenzar, y después de una cuenta atrás, a todos los jugadores se les presentará un tablero de Wordle donde pondrán ir escribiendo sus intentos. Si alguno de los jugadores descubre la palabra, todos los jugadores verán una nueva pantalla con el nombre de la persona ganadora, en esta nueva pantalla, los jugadores pueden elegir entre salir de la partida o volver a jugar. En caso de que ningún jugador consiga ganar, se les presentará a todos una pantalla en el que se mostrará la palabra objetivo, y las mismas opciones que en el caso de haber habido un ganador.
 
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[clip=true,width=\textwidth]{./diagrams/webapp_flow.pdf}
-	\caption{Diagrama de flujo de la aplicación web.}
+	\caption{Diagrama de flujo de la aplicación web.\tutor{Este diagrama es muy grande como figura incluso en una página aislada, trata de reducirla}}
 	\label{fig:web_diagram}
 \end{figure}
 
@@ -87,7 +91,7 @@ Los bordes redondeados hacen más amigable la aplicación, y sigue con tendencia
 
 El tablero dispone de un teclado para indicar las letras usadas, oscureciendo aquellas que no se encuentran en la palabra, marcando verde aquellas que se encuentran en la posición correcta y naranjas aquellas que no se encuentran en la posición correcta. El teclado es además completamente funcional.
 
-Toda la aplicación es \textit{responsive}, lo cual significa que es adaptable para cualquier pantalla de cualquier dispositivo, por ejemplo, asi es que como se ve la aplicación en un telefono movil de la compañia Apple.
+Toda la aplicación es \textit{responsive}, lo cual significa que es adaptable para cualquier pantalla de cualquier dispositivo, por ejemplo, asi es que como se ve la aplicación en un telefono movil de la compañia Apple. \tutor{Reduce la figura para que quepa en esta misma página}
 
 \begin{figure}[H]
 	\centering
@@ -104,7 +108,7 @@ Además, todas las vistas de la aplicación cuentan con un botón de informació
 \subsubsection{Comunicación websocket}
 La comunicación websocket ha sido el punto de aprendizaje principal, según se fueron desarrollando las diferentes partes para el trabajo, se fue definiendo lo que acabó siendo una serie de reglas sobre la comunicación diferenciando estas en tres tipos de comunicación diferentes.
 
-Para entender estos tres tipos de comunicación hay que entender primero el sistema de comunicación HTTP. En este tipo de comunicación es el cliente el que inicia la llamada y es el servidor el que responde a esta. Sin embargo, en websockets, el servidor puede enviar información al cliente sin que sea el iniciador de la llamada. Por ello Websockets funciona por sistemas de eventos, donde el socket puede enviar y esperar comunicación (comunicación bidireccional).
+Para entender estos tres tipos de comunicación hay que entender primero el sistema de comunicación HTTP. En este tipo de comunicación es el cliente el que inicia la llamada y es el servidor el que responde a esta. Sin embargo, en websockets, el servidor puede enviar información al cliente sin que sea \tutor{el cliente, no? indícalo} el iniciador de la llamada. Por ello Websockets funciona por sistemas de eventos, donde el socket puede enviar y esperar comunicación (comunicación bidireccional).
 
 Una vez entendida la comunicación HTTP y la comunicación websocket, y las diferencias entre ambas, va a quedar claro porque en CoWordle se diferencia entre tres tipos distintos de comunicación.
 
@@ -113,18 +117,20 @@ Estos eventos se clasifican como eventos OUT, ya que el cliente envía informaci
 
 En segundo lugar tenemos la comunicación servidor - cliente, un ejemplo de esto es el recién descrito \textit{player\_disconnected}, en el que el servidor envía un evento a los jugadores de la sala. Este tipo de eventos se clasifica en CoWordle como IN, porque el cliente recibe información del servidor.
 
-Por último lugar el último tipo de comunicación se clasifica como DIALOGUE, y se explica porque es comunicación cliente - servidor - cliente, es decir, es el cliente el que comienza la comunicación, el servidor procesa la respuesta y se la envía al cliente con el mismo nombre de evento con el que la llamada había comenzado, hasta que la llamada no ha sido respondida, el cliente se quedará esperando una respuesta de manera asíncrona, es decir, sin bloquear al resto de la aplicación.
+Por último lugar el último tipo de comunicación se clasifica como DIALOGUE, y se explica porque \tutor{'se explica porque' es una construcción extraña, trata de refrasearlo} es comunicación cliente - servidor - cliente, es decir, es el cliente el que comienza la comunicación, el servidor procesa la respuesta y se la envía al cliente con el mismo nombre de evento con el que la llamada había comenzado, hasta que la llamada no ha sido respondida, el cliente se quedará esperando una respuesta de manera asíncrona, es decir, sin bloquear al resto de la aplicación.
 
 \subsection{Servidor Websockets}
-El servidor de websockets está implementado utilizando Deno y una librería que ayuda al manejo de eventos para los websockets llamada Socket.io. Deno se utiliza para levantar el servidor y para recibir peticiones HTTP, aunque existen pocos endpoints para la comunicación HTTP, existe un endpoint necesario para que Socket.io cree la conexión de Websockets, y uno más para la creación de la partida.
+El servidor de websockets está implementado utilizando Deno y una librería que ayuda al manejo de eventos para los websockets llamada Socket.io. Deno se utiliza para levantar el servidor y para recibir peticiones HTTP, aunque existen pocos endpoints para la comunicación HTTP, existe un endpoint necesario para que Socket.io cree la conexión de Websockets, y uno más para la creación de la partida. 
+\tutor{Otra frase muy larga, trata de dividirla. Realmente no aporta mucho decir que hay pocos endpoints, menciona simplemente que hay uno para crear la conexión}
 
 \subsubsection{Sistema de eventos}
 El servidor responde a peticiones HTTP y de Websockets creando eventos que son respondidos de manera secuencial por funciones lambda, cada función sólo responde a un evento, devolviendo una respuesta.
 Javascript es una tecnología uni-hilo, pero es capaz de realizar concurrencia utilizando primitivas asíncronas llamadas promesas, cuando una función marcada como asíncrona se ejecuta, el motor de Javascript la guarda como evento, este evento será manejado cuando el motor de Javascript lo considere oportuno. Por ejemplo, cuando la CPU está esperando una lectura de la memoría, Javascript puede cambiar el contexto y procesar otras funciones. De está manera, Javascript es capaz de maximizar la utilización de su hilo de ejecución.
 
 \subsubsection{Eventos disponibles}
-El servidor permite la comunicación utilizando las siguientes rutas HTTP:Soso
+El servidor permite la comunicación utilizando las siguientes rutas HTTP:Soso\tutor{Soso?}
 
+\tutor{qué distingue estos eventos de llamadas HTTP como los que se muestran más abajo?}
 \begin{itemize}
 	\item \textit{/create-route}, genera un nuevo identificador de partida. Este identificador es fundamental para la comunicación entre el cliente y el servidor ya que permite la identificación de la partida para realizar las operaciones necesarias.
 	\item \textit{/testing/solution}, este endpoint está disponible para poder realizar un tests de integración de flujo completo.correcta.
@@ -151,7 +157,7 @@ Como el objetivo del trabajo era el aprendizaje de la comunicación bidirecciona
 \end{itemize}
 
 \subsubsection{Identificador de partida}
-Cada partida tiene un identificador único de seis cifras generado pseudo-aleatoriamente llamado roomCode. El roomCode lo generará el servidor de websockets tras la petición de /create-room, este endpoint HTTP únicamente reserva el código generado para la partida, utilizando ese código los jugadores son capaces de unirse a la partida inicialmente, el código también se utiliza para realizar la comunicación cliente-servidor.
+Cada partida tiene un identificador único de seis cifras generado pseudo-aleatoriamente llamado roomCode. El roomCode lo generará el servidor de websockets tras la petición de /create-room,\tutor{Aquí de nuevo, la coma no tiene sentido. Es muy extraño que siempre te refieras al servidor de websocket pero este atienda peticiones http} este endpoint HTTP únicamente reserva el código generado para la partida, utilizando ese código los jugadores son capaces de unirse a la partida inicialmente, el código también se utiliza para realizar la comunicación cliente-servidor.
 
 
 \section{Diseño e Implementación}
