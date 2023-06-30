@@ -4,17 +4,16 @@ Este trabajo representa la finalización del Grado de Ingeniería Informática, 
 
 La realización de CoWordle se centra en el aprendizaje por parte del autor de algunas tecnologías web, como la utilización de WebSockets como método de comunicación entre cliente y servidor.  Además, permite aprender también tecnologías como Docker, que permiten desplegar la aplicación de manera sencilla, independientemente del lugar de despliegue.
 
-\tutor{sockets o Websocket? Cuentalo de manera más narrativa: 'El objetivo de este trabajo es aprender a utilizar Websockets, una tecnología que permite la comunicación bidireccional entre cliente y servidor, y que se utiliza en aplicaciones web que requieren comunicación en tiempo real, como podría ser un juego en tiempo real.'}
-La tecnología de sockets es una tecnología que se estudia brevemente en el grado, pero no se llega a utilizar de manera práctica.
+La tecnología de WebSockets es una tecnología que se estudia brevemente en el grado, pero no se llega a utilizar de manera práctica.
 
+El objetivo de este trabajo es aprender a utilizar WebSockets, una tecnología que permite comunicar el cliente y el servidor de manera bidireccional, y que se utiliza en aplicaciones de tiempo real, como juegos online, aplicaciones de mensajería web o como base para otras tecnologías como WebRTC.
 
-\section{Introducción}
-\tutor{Es muy extraño que haya una subsección 'Introducción' dentro de una sección 'Introducción'. Trata de fusionarlo con la anterior}
-CoWordle es un juego web multijugador derivado de Wordle. CoWordle añade a la versión original la capacidad de desafiar a otros jugadores y competir en tiempo real jugando una partida de Wordle simultánea.
+\textbf{CoWordle} es el juego web multijugador derivado de Wordle desarrollado para este trabajo. CoWordle añade a la versión original la capacidad de desafiar a otros jugadores y competir en tiempo real jugando una partida de Wordle simultánea.
 
 
 \section{Wordle}
-Wordle es un juego de navegador creado por el ingeniero Josh Wardle durante la pandemia pandemia de COVID-19\tutor{Resalta la popularidad que tuvo esta aplicación}, donde los jugadores tienen que encontrar una palabra objetivo probando otras palabras, parecido a juegos como el ahorcado.
+
+\textbf{Wordle} es un juego de navegador creado por el ingeniero Josh Wardle durante la pandemia de COVID-19. Desde el lanzamiento Wordle ha conseguido que millones de jugadores se conecten cada día para encontrar una palabra objetivo.
 
 \begin{figure}
 	\centering
@@ -52,7 +51,7 @@ Esta estadística ha sido uno de los grandes éxitos del juego, millones de juga
 
 \subsection{Otras aplicaciones derivados de Wordle}
 
-Tras el éxito de Wordle, multitud de aplicaciones comenzaron a aparecer que clonaban las mismas mecánicas que Wordle, entre ellas, existen versiones en diferentes lenguajes o versiones donde tienes que resolver múltiples palabras simultáneamente como Octordle (\tutor{Trata de utilizar la palabra 'Figura' en lugar de 'imagen', con la primera letra en mayúscula}imagen \ref{fig:octordle_app}) o Dordle (imagen \ref{fig:dordle_app}).
+Tras el éxito de Wordle, multitud de aplicaciones comenzaron a aparecer que clonaban las mismas mecánicas que Wordle, entre ellas, existen versiones en diferentes lenguajes o versiones donde tienes que resolver múltiples palabras simultáneamente como Octordle (figura \ref{fig:octordle_app}) o Dordle (figura \ref{fig:dordle_app}).
 
 
 \begin{figure}
@@ -64,24 +63,24 @@ Tras el éxito de Wordle, multitud de aplicaciones comenzaron a aparecer que clo
 
 \begin{figure}
 	\centering
-	\includegraphics[clip=true,width=0.75\textwidth]{images/dordle.png}
+	\includegraphics[clip=true,width=0.5\textwidth]{images/dordle.png}
 	\caption{Aplicación Dordle.}
 	\label{fig:dordle_app}
 \end{figure}
 
 
-A parte de inspirar multitud de juegos sobre palabras, existen variaciones como Globle, Worldle (figura \ref{fig:worldle_app}), en las que el objetivo es descubrir países utilizando las formas de estos, o Numberle (figura \ref{fig:numberle_app}), donde el objetivo el completar ecuaciones matemáticas.\tutor{Las figuras son demasiado grandes, trata de reducirlas}
+A parte de inspirar multitud de juegos sobre palabras, existen variaciones como Globle, Worldle (figura \ref{fig:worldle_app}), en las que el objetivo es descubrir países utilizando las formas de estos, o Numberle (figura \ref{fig:numberle_app}), donde el objetivo el completar ecuaciones matemáticas.
 
 \begin{figure}
 	\centering
-	\includegraphics[clip=true,width=0.75\textwidth]{images/worldle.png}
+	\includegraphics[clip=true,width=0.5\textwidth]{images/worldle.png}
 	\caption{Aplicación Worldle.}
 	\label{fig:worldle_app}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[clip=true,width=0.75\textwidth]{images/numberle.png}
+	\includegraphics[clip=true,width=0.5\textwidth]{images/numberle.png}
 	\caption{Aplicación Numberle.}
 	\label{fig:numberle_app}
 \end{figure}
