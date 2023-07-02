@@ -165,7 +165,7 @@ Cada partida tiene un identificador único de seis cifras generado pseudo-aleato
 \subsection{La reutilización de componentes}
 Svelte, la tecnología que he usado para hacer los componentes de front, se basa en la creación de componentes que puedan ser reutilizados en diferentes situaciones, la reutilización de código se considera buena práctica en todo el ámbito de la ingeniería informática. Por ello parece importante destacar que una buena elección de la tecnologías es solo la base, y es necesario hacer un buen uso de estas para poder llegar a un buen resultado, por ello en este apartado quiero destacar un buen uso de componentes de Svelte.
 
-Existe un componente que se reutiliza varias veces a lo largo de la aplicación, el componente llamado <Word>, que se encuentra en el archivo Word.svelte de la aplicación cowordle-webapp.
+Existe un componente que se reutiliza varias veces a lo largo de la aplicación, el componente llamado $<$Word$>$\tutor{Aquí estaba escapando mal los caracteres}, que se encuentra en el archivo Word.svelte de la aplicación cowordle-webapp.
 
 Este componente se utiliza como botones estilizados en el menú principal, en este primer uso, el componente muestra la palabra elegida por el desarrollador, indicando al usuario que es un botón con el que puede interaccionar.
 
@@ -229,12 +229,14 @@ En este caso estamos utilizando la directiva bind para hacer que el componente s
 
 Parece un pequeño detalle, pero esta flexibilidad de desarrollo simplifica el código haciéndolo muy reutilizable y componible.
 
-La primera implementación del componente Word se hizo cuando se comenzó el proyecto,  y sin mucho cambio, ha llegado a utilizarse en otras partes de la aplicación en las que no se había llegado a pensar cuando se creó el componente, y eso demuestra que se realizó un buen diseño inicialmente.
+La primera implementación del componente Word\tutor{trata de referirte al componente siempre igual} se hizo cuando se comenzó el proyecto,  y sin mucho cambio, ha llegado a utilizarse en otras partes de la aplicación en las que no se había llegado a pensar cuando se creó el componente, y eso demuestra que se realizó un buen diseño inicialmente.
 
 \subsection{Tipados en la comunicación websocket}
-Como se ha explicado en el apartado XX, la comunicación websocket con el servidor de CoWordle se clasifica en tres grupos, según sea cliente - servidor, servidor - cliente y cliente - servidor - cliente. En este apartado se va a explicar cómo de fácil es realizar esta comunicación independientemente del tipo de esta.
+Como se ha explicado en el apartado XX \tutor{Te falta la referencia}, la comunicación websocket con el servidor de CoWordle se clasifica en tres grupos, según sea cliente - servidor, servidor - cliente y cliente - servidor - cliente. En este apartado se va a explicar cómo de fácil es realizar esta comunicación independientemente del tipo de esta.
 
-Toda esta capa de tipado se construye como un wrapper sobre el socket expuesto por Socket.IO, esto permite utilizar la potencia de Socket.IO, mientras se provee la seguridad de tipos y la comodidad se autocompleciones del IDE.
+Toda esta capa de tipado se construye como un wrapper sobre el socket expuesto por Socket.IO. Esto permite utilizar la potencia de Socket.IO, mientras se provee la seguridad de tipos y la comodidad se autocompleciones \tutor{del auto-completado ...} del IDE.
+
+\tutor{Aprovecha para recordar en una línea rápidamente cuales son los 3 tipos de comunicación que vas a usar (los mencionas más arriba, pero nunca viene mal recordárselo al lector)}
 
 \subsubsection{Comunicación IN}
 Para la comunicación IN, es el servidor quien envía el evento al cliente, por ello el cliente debe quedarse esperando a que el servidor envíe la petición.
@@ -249,7 +251,7 @@ El wrapper expone un método \textit{on}, que permite añadir un callback cuando
 	}); 
 \end{mytypescript}
 
-En el ejemplo del código \ref{alg:ws_in_usage} se puede observar cómo se está definiendo que cuando el evento \textit{player\_connected} ocurra, la función lambda debe ejecutarse. El evento \textit{player\_connected} está declarado utilizando tipos de la siguiente manera:
+En el ejemplo\tutor{usa mejor 'En el fragmento ...'} del código\tutor{Trata de usar siempre máyusculas para 'Figura', 'Código', etc} \ref{alg:ws_in_usage} se puede observar cómo se está definiendo que cuando el evento \textit{player\_connected} ocurra, la función lambda debe ejecutarse. El evento \textit{player\_connected} está declarado utilizando tipos de la siguiente manera:
 
 \begin{mytypescript}[float={!h},caption={Ejemplo de declaración de la comunicación IN.},label={alg:player_connected_type}]
 	export type WebsocketInEvent = {
@@ -326,7 +328,7 @@ En la comunicación de tipo Dialogue, el cliente envía un evento al servidor, e
 	});
 \end{mytypescript}
 
-Como se puede ver en el ejemplo, para usar un evento de tipo Dialogue tan solo tenemos que llamar al método \textit{dialogue} del wrapper. El primer argumento define el evento que vamos a emitir y sobre el que vamos a esperar la respuesta. El segundo argumento describe los datos que vamos a enviar. Como respuesta obtendremos una \textit{promesa} de la respuesta que recibiremos del servidor cuando este responda.
+Como se puede ver en el ejemplo, para usar un evento de tipo Dialogue tan solo tenemos que llamar al método \textit{dialogue} del wrapper. \tutor{¿Qué nos ofrece 'dialogue' en este ejemplo que no nos ofrezca una petición REST al uso?} El primer argumento define el evento que vamos a emitir y sobre el que vamos a esperar la respuesta. El segundo argumento describe los datos que vamos a enviar. Como respuesta obtendremos una \textit{promesa} de la respuesta que recibiremos del servidor cuando este responda.
 
 Para declarar un evento del tipo Dialogue, se utiliza una sintaxis muy cómoda, que permite diferenciar en un solo vistazo los tipos que vamos a enviar y los tipos que vamos a recibir.
 
@@ -345,7 +347,7 @@ Para declarar un evento del tipo Dialogue, se utiliza una sintaxis muy cómoda, 
 
 El evento se declara como una función donde los argumentos son los datos a enviar a servidor, y cuya respuesta son los tipos que vamos a recibir del servidor. 
 
-Como explicaba anteriormente, la implementación es un poco más compleja que en los tipos de comunicación anteriores.
+Como explicaba anteriormente, la implementación es un poco más compleja que en los tipos de comunicación anteriores. \tutor{Recuerda que SIEMPRE tienes que mencionar cualquier Figura o fragmento de código que aparezca en la memoria. En este caso sospecho que te estas refiriendo al Código 4.9}
 
 \begin{mytypescript}[float={!h},caption={Implementación del método \textit{dialogue}.},label={alg:etiqueta}]
 	async dialogue<TEvent extends EventName<WebSocketDialogueEvent>, TEventMethod extends WebSocketDialogueEvent[TEvent]>(
@@ -376,7 +378,7 @@ Con esta implementación estamos manteniendo la sencillez de uso que teníamos c
 Como el proyecto está dividido en dos repositorios distintos con tecnologias distintas, es necesario ver como se han realizado los tests en ambos repositorios.
 
 \subsection{Webapp}
-Para la webapp se han realizado pruebas principalmente de componentes, para ello se ha utilizado Playwright. Como se ha explicado en la sección de tecnologías, Playwright es la librería recomendada para el testeo de componentes.
+Para la webapp se han realizado pruebas principalmente de componentes, para ello se ha utilizado Playwright \tutor{Indíca claramente que tipo de test estás ejecutando}. Como se ha explicado en la sección de tecnologías, Playwright es la librería recomendada para el testeo de componentes.
 
 Playwright utiliza un navegador \textit{headless} internamente para comprobar que los componentes están funcionando. Además, permite seleccionar qué tecnología de navegador se quiere probar. Para CoWordle se realizan tests en todas las tecnologías principales, Firefox, Chromium y Webkit.
 
@@ -415,6 +417,7 @@ Un ejemplo de test donde se comprueba el contenido textual de un componente se p
 	});
 \end{mytypescript}
 
+\tutor{Estas hablando de lo mismo, por lo que el salto de linea no tiene sentido. Recuerda referencias las figuras y fragmentos de código que aparezcan en la memoria, ya que puede ser muy confuso lo que para ti parece obvio}
 En este test se puede comprobar cómo se monta el componente y se prueba que el texto interno del componente coincide con lo esperado.
 
 Un ejemplo de test donde se comprueba que los colores de las letras se puede volver a ver en el archivo ya visto.
@@ -459,7 +462,7 @@ Una vez ejecutado el comando, Playwright comenzará a realizar los tests, una ve
 	\label{fig:playwright_tests_result}
 \end{figure}
 
-En esta página podemos inspeccionar cada test realizado, pudiendo ver las comprobaciones que se han realizado en cada uno, y en caso de haber fallado, la razón del error.
+En esta página \tutor{¿Qué página? da más detalles al lector de lo que está viendo} podemos inspeccionar cada test realizado, pudiendo ver las comprobaciones que se han realizado en cada uno, y en caso de haber fallado, la razón del error.
 
 \begin{figure}[H]
 	\centering
@@ -471,12 +474,15 @@ En esta página podemos inspeccionar cada test realizado, pudiendo ver las compr
 \subsubsection{Problemas encontrados}
 Playwright puede llegar a ser complejo de instalar según sea el sistema del usuario a ejecutar los tests. Para la realización de esta práctica se han dedicado varias horas únicamente a conseguir que Playwright consiga ejecutar los tests en el entorno en el cual se ha realizado esta (WSL 2).
 
+\tutor{Es muy delicado hablar de los errores que has encontrado sin hablar de soluciones. Recuerda que en AIS vimos que los test deberían poder ejecutarse en cualquier entorno. ¿Podría yo ejecutar los test? ¿Que necesitaría para hacer (qué contexto)?}
+
 Además, en ocasiones Playwright falla iniciando el contexto del navegador y no llega a ejecutar algunos tests correctamente.
 
 \subsection{Servidor de Websockets}
 Los tests para el servidor de Websockets se han centrado en el testeo de la comprobación de palabras para la generación de resultados Wordle.
+\tutor{Comenta que tipo de test es, cuandos test hay, etc}
 
-Con la flexibilidad de testeo que ofrece Deno, se ha programado un sistema que es capaz de generar tests unitarios para las palabras que se requiera (\ref{alg:deno_tests}). Para ello, se genera un test con varios steps (pasos), cada step es una nueva palabra para probar, todo ello es posible generando una estructura de datos que almacene el intento del jugador, y el resultado que se debería de obtener tras el intento. Después, tan solo es necesario recorrer la estructura de datos generando los steps \ref{alg:deno_tests_2}.
+Con la flexibilidad de testeo que ofrece Deno, se ha programado un sistema que es capaz de generar tests unitarios para las palabras que se requiera \tutor{Siempre que referencias algo, pon lo que es, en este caso Código~\ref{alg:deno_tests}}(\ref{alg:deno_tests}). Para ello, se genera un test con varios steps (pasos), cada step es una nueva palabra para probar, todo ello es posible generando una estructura de datos que almacene el intento del jugador, y el resultado que se debería de obtener tras el intento. Después, tan solo es necesario recorrer la estructura de datos generando los steps \ref{alg:deno_tests_2}.
 
 \begin{mytypescript}[float={!h},caption={Implementación del sistema de creación de test automáticos.},label={alg:deno_tests}]
 	const validations: WordTest[] = [
@@ -551,15 +557,17 @@ Existen varias maneras de ejecutar la aplicación, la opción más sencilla es u
 \subsection{Utilizando Docker}
 Utilizando Docker, podemos levantar la aplicación al completo, tanto la webapp, como el servidor de websockets. Esta es la opción más sencilla y la manera recomendada de levantar la aplicación para su despliegue.
 
-Para levantar la aplicación utilizando Docker necesitamos tener Docker y Docker Compose instalado. Una vez instalado podemos utilizar el siguiente archivo docker-compose.yaml, este archivo instruye a Docker como queremos que levante la aplicación.
+Para levantar la aplicación utilizando Docker necesitamos tener Docker y Docker Compose instalado. Una vez instalado podemos utilizar el siguiente archivo docker-compose.yaml. Este archivo instruye\tutor{Intruye sugiere un contexto de aprendizaja (quizás una para traducción), realmente es simplemente una forma de ejecutar aplicaciones docker multi-contenedor} a Docker como queremos que levante la aplicación.
 
-En el archivo se muestra que se van a desplegar dos aplicaciones, la primera es la webapp, la segunda es el servidor de websockets. Además, se crea una red entre ambas aplicaciones que facilita la comunicación entre estas.
+En el archivo se muestra \tutor{Qué archivo? Que se muestra dónde? Si es el docker-compose.yml, entonces esto debería ir en el párrafo anterior} que se van a desplegar dos aplicaciones, la primera es la webapp, la segunda es el servidor de websockets. Además, se crea una red entre ambas aplicaciones que facilita la comunicación entre estas.
 
 Una vez dispongamos de un archivo \textit{docker-compose.yaml}, podemos utilizar el siguiente comando para levantar la aplicación.
 
 \begin{mypython}[float={!h},caption={Comando para levantar todas las aplicaciones utilizando Docker.},label={sh:run_docker}]
 	$ docker compose up
 \end{mypython}
+
+\tutor{De nuevo, es muy probable que el lector trate de ejecutar este comando y encuentre  el error que te mandé por correo. Sería interesante mstrar aquí el archivo docker-compose, indicando los contenedores que lanza, porque si te fijas, la sección aporta muy poca información a tu trabajo, es casi una explicación de lo que es Docker y Docker Compose.}
 
 Si queremos levantar la aplicación en segundo plano, podemos utilizar el siguiente comando en su lugar.
 
@@ -589,13 +597,13 @@ También es posible descargar el código utilizando git con los siguientes coman
 \end{mypython}
 
 Una vez descargado el código, tenemos que levantar ambas aplicaciones:
-Para levantar la webapp, será necesario utilizar el comando:
+Para\tutor{después de :, minúscula} levantar la webapp, será necesario utilizar el comando:
 
 \begin{mypython}[float={!h},caption={Comando para levantar la webapp.},label={sh:run_webapp}]
 	$ npm run dev
 \end{mypython}
 
-Para levantar el servidor de websockets, será necesario utilizar el comando:
+Para levantar el servidor de websockets, será necesario utilizar el comando\tutor{Siempre referencias!}:
 
 \begin{mypython}[float={!h},caption={Comando para levantar el servidor de Websockets.},label={sh:run_ws_server}]
 	$ deno task dev
