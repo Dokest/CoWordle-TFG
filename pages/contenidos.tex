@@ -1,5 +1,3 @@
-\tutor{El título de esta sección es muy raro. Renombrala 'Tecnologías, Herramientas y Metodologías', distingue entre tecnologías y herramientas.}
-
 \section{Tecnologías}
 
 
@@ -15,11 +13,11 @@ Además, en el trabajo se han creado sistemas específicos de ayuda sobre los ti
 
 
 \subsection{Node.js}
-Node \cite{nodejs_docs} es probablemente una de las creaciones más influyentes en el mundo web, creada por Ryan Dahl en 2009, \tutor{después de una , no encaja un 'y', prueba con un 'que'}y permite ejecutar código Javascript en el lado del servidor, sin necesidad de usar un navegador.
+Node.js \cite{nodejs_docs} es probablemente una de las creaciones más influyentes en el mundo web, creada por Ryan Dahl en 2009, permite ejecutar código Javascript en el lado del servidor, sin necesidad de usar un navegador.
 
-Node utiliza internamente el motor de Javascript (y WebAssembly) V8 desarrollado para Chromium por Google.
+Node.js utiliza internamente el motor de Javascript (y WebAssembly) V8 desarrollado para Chromium por Google.
 
-Una de las principales diferencias entre Node.js y otros sistemas como el motor de PHP, es que no es necesario levantar un proceso para cada llamada, en su lugar, Node.js es capaz de ir recibiendo llamadas e irlas respondiendo de manera concurrente\tutor{Node no es "concurrente" al uso, funciona con un event-loop (es uni-hilo), sigue una arquitectura orientada a eventos, echa un ojo aquí: \url{https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick}o aquí \url{https://tsh.io/blog/simple-guide-concurrency-node-js/}}, esto le permite responder mucho más rápido y eficientemente que otros sistemas.
+Una de las principales diferencias entre Node.js y otros sistemas como el motor de PHP, es que no es necesario levantar un proceso para cada llamada, en su lugar, Node.js es capaz de ir recibiendo llamadas e irlas respondiendo en un único hilo de ejecución pero con un sistema de eventos que permite responder varias peticiones simultáneamente \alumno{¿Es simultaneamene más preciso? Según he estado mirando en los links que me pasaste el procesamiento usa una cola de eventos}, esto le permite responder mucho más rápido y eficientemente que otros sistemas.
 
 En 2022 y según la encuesta de StackOverflow \cite{so_survey} en la que participaron más de cuarenta y cinco mil personas, Node.js es la tecnología web más usada entre desarrolladores profesionales siendo usada por un 46.31\% de estos.
 
@@ -39,7 +37,7 @@ Deno es capaz de ejecutar código Typescript directamente utilizando un compilad
 \subsubsection{¿Cómo se ha utilizado Deno?}
 Deno no estaba planteado como herramienta cuando se comenzo el trabajo, pero despues de necesitar hacer tests para la parte de servidor de WebSockets, y buscar posibles herramientas de testeo para Node.js, surgió la idea de cambiar esta parte de Node.js por Deno.
 
-Como ya se ha comentado, Deno cuenta con su propio corredor\tutor{mejor 'ejecutor'} de tests, y además, es casi completamente compatible con Node.js, migrar la aplicación fue un trabajo de un par de horas, en las que simplemente hubo que cambiar la forma de inicializar la aplicación para ajustarse con el sistema de Deno.
+Como ya se ha comentado, Deno cuenta con su propio ejecutor de tests, y además, es casi completamente compatible con Node.js, migrar la aplicación fue un trabajo de un par de horas, en las que simplemente hubo que cambiar la forma de inicializar la aplicación para ajustarse con el sistema de Deno.
 
 \subsubsection{Curiosidad, el nombre de Deno}
 Como el creador de Deno es también el creador de Node.js, Ryan Dahl de manera cómica eligió el nombre de Deno invirtiendo las sílabas de Node (No-de -> De-no).
@@ -48,8 +46,9 @@ Como el creador de Deno es también el creador de Node.js, Ryan Dahl de manera c
 \subsection{SvelteKit}
 SvelteKit \cite{sveltekit_docs} es una tecnología para el desarrollo front-end y back-end desarrollada por Rich Harris.
 
-SvelteKit es la unión de dos tecnologías, por una lado Svelte, que es un framework de desarrollo front-end, alternativo a React, Angular o Vue. Y por otro lado, la parte del nombre Kit viene de la incorporación a Svelte de un sistema de routing y de poder ejecutar código en back-end, también habilita la posibilidad de hacer SSR (Server Side Rendering), al igual que Next permite hacer SSR para React, o Nuxt permite hacer SSR para Vue.
-\tutor{Esta frase ha quedado muy larga, dividela o trata de utilizar otros conectores}
+SvelteKit es la unión de dos tecnologías, por una lado Svelte, que es un framework de desarrollo front-end, alternativo a React, Angular o Vue. Y por otro lado, la parte del nombre \textit{Kit} viene de la incorporación a Svelte de un sistema de routing, y la posibilidad de ejecutar código en el lado de servidor.
+
+SvelteKit, también permite hacer SSR (Server Side Rendering), al igual que Next permite hacer SSR para React, o Nuxt permite hacer SSR para Vue.
 
 \subsubsection{Svelte}
 Svelte \cite{svelte_docs} es un compilador de componentes web que permite al desarrollador programar la vista, ejecución y estilado de un componente en un solo archivo, y tras ser compilado, devuelve código que manipula el DOM y es reactivo a cambios en la información presentada.
@@ -74,7 +73,7 @@ Tailwind funciona utilizando clases HTML, que tienen una representación en el f
 Tailwind no es una librería de componentes ya hechos, como lo puede ser Bootstrap, Tailwind solo incluye código CSS que es el que será interpretado por el navegador.
 
 \subsubsection{¿Cómo se ha usado Tailwind?}
-Tailwind se ha usado para la mayoría del estilaje \tutor{mejor: se ha usado para la maquetación}de la aplicación, aunque ha habido pequeñas partes que si han necesitado de su propio CSS para crear estilos más complejos.
+Tailwind se ha usado para la mayoría de la maquetación de la aplicación, aunque ha habido pequeñas partes que si han necesitado de su propio CSS para crear estilos más complejos.
 
 \subsection{Git y GitHub}
 Git es un sistema de control de versiones distribuido, que permite a desarrolladores sincronizar su código entre versiones.
@@ -97,4 +96,4 @@ Este trabajo ha seguido una metodología iterativa e incremental en espiral, en 
 
 En cada reunión se hacen propuestas de mejora, y estas se convierten en objetivos para la siguiente revisión. Poco a poco el desarrollo del trabajo se fue materializando, empezando con los pasos más básicos como tener una plantilla sobre la que poder ir probando desarrollos, pasando por el aprendizaje de la tecnología de WebSockets, como el arreglo de bugs que han ido surgiendo a lo largo del tiempo.
 
-La metodología escogida ha funcionado muy bien para el tipo de proyecto, la progresión iterativa y en fragmentos ha permitido que la práctica\tutor{TFG o trabajo, no práctica} se haya desarrollado lentamente, y con la atención puesta en cada fragmento de desarrollo, sin llegar a encontrarse con un gran panel de tareas que pueda resultar abrumador, además, el planteamiento a futuro ha permitido que la aplicación haya crecido adecuadamente, sin necesidad de realizar grandes cambios.
+La metodología escogida ha funcionado muy bien para el tipo de proyecto, la progresión iterativa y en fragmentos ha permitido que el TFG se haya desarrollado lentamente, y con la atención puesta en cada fragmento de desarrollo, sin llegar a encontrarse con un gran panel de tareas que pueda resultar abrumador, además, el planteamiento a futuro ha permitido que la aplicación haya crecido adecuadamente, sin necesidad de realizar grandes cambios.

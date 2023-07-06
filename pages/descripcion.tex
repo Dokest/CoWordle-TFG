@@ -1,36 +1,35 @@
 \section{Requisitos}
 
-\tutor{Aunque el enfoque es interesante, no estas poniendo los requisitos de la aplicación, sino los objetivos del trabajo. Tienes que distinguir entre requisitos funcionales y no funcionales. Ejemplo: RF1. Como usuario quiero poder crear una sala ... RNF1. El sistema debe ser fácil de usar. Puedes orientar en que en cada fase se iban originando nuevos requisitos o eran modificados.}
+\subsection{Requisitos funcionales}
 
-Como la metodología de desarrollo ha sido iterativa, algunos de los requisitos han ido surgiendo durante el desarrollo de la aplicación, e inclusos algunos requisitos han cambiado según se han ido encontrando o destruyendo barreras. Los requisitos iniciales, que se plantearon en la primera reunión eran:
+Los primeros requisitos funcionales del TFG se centraron en la creación de los sistemas y las mecánicas básicas que definen a CoWordle. Después, se fueron detallando funcionalidades más avanzadas.
 
-Desarrollar una aplicación para cuatro jugadores en las que compiten para encontrar la palabra. En este momento ya se ha definido que es un juego variante del Wordle, además, por simplificar el desarrollo en estos momentos iniciales, se ha decidido guardar la información sobre los jugadores en memoría, sin utilizar ninguna base de datos.
+\begin{itemize}
+	\item RF1. Como usuario puedo crear una partida a la que otros jugadores pueden unirse.
+	\item RF2. Como usuario puedo unirme a partidas creadas por otros jugadores si poseo el link o el código de la partida.
+	\item RF3. Como usuario puedo cambiarme el nombre público en una partida.
+	\item RF4. Como usuario puedo ver a todos los jugadores de la partida.
+	\item RF5. Como usuario creador de una partida (\textit{host}), tengo el control sobre cuándo quiero que comience ésta.
+	\item RF6. Como usuario \textit{host} puedo expulsar a otros jugadores de la partida.
+	\item RF7. Como usuario puedo introducir palabras una vez haya comenzado la partida.
+	\item RF8. Como usuario puedo ganar si introduzco la palabra objetivo.
+	\item RF9. Como usuario puedo conocer cómo de cerca están otros jugadores de la palabra objetivo.
+	\item RF10. Como usuario puedo abandonar la partida en cualquier momento y unirme a otras.
+	\item RF11. El sistema es capaz de detectar cuándo un jugador se ha unido a la partida, y mostrar al resto de jugadores su nombre.
+	\item RF12. El sistema es capaz de detectar cuándo un jugador ha abandonado la partida, y de eliminar su información de ésta. Además, en caso de ser el último jugador, el sistema eliminará la memoria reservada para la partida.
+	\item R13. El sistema es capaz de detectar cuándo todos los jugadores han acabado sus intentos, y mostrar una pantalla con la solución y un mensaje indicando que todos los jugadores han perdido.
+	\item RF14. Como usuario puedo acceder a la aplicación desde dispositivos móviles, tablets, portátiles y de ordenadores de sobremesa. 
+\end{itemize}
 
-\subsection{Fases}
-En cada fase de desarrollo quedan agrupadas una serie de nuevos requisitos y mejoras sobre los requisitos que ya se habían completado.
+\subsection{Requisitos no funcionales}
 
-\subsubsection{Fase 0}
-En la fase 0, se propone la idea de la aplicación y se comienzan a crear requisitos, primero se define las ideas y los requerimientos, como la necesidad de crear un sistema de tiempo real, además, se especifican las tecnologías, y se define como debería de avanzar el proyecto a lo largo del tiempo.
-
-\subsubsection{Fase 1}
-En la fase 1, se presentó una primera versión de la aplicación, en ella un número no controlado de jugadores podían jugar en una misma sala, existía un lobby donde los jugadores podían cambiar su nombre y podían jugar hasta que uno ganase. Todavía no se llegaba a controlar el que los jugadores hubieran perdido, así que era posible quedarse bloqueado con todos los jugadores sin posibilidad de probar nuevas palabras.
-La palabra objetivo en esta fase no era generada aleatoriamente, en su lugar, era siempre la misma palabra. Esto facilitaba mucho las pruebas iniciales de flujo de la aplicación.
-
-\subsubsection{Fase 2}
-En la fase 2, el servidor ya era capaz de generar una palabra aleatoria entre una lista de posibles palabras. Todos los jugadores reciben la palabra objetivo aleatoria al comenzar la partida, en el momento en el que uno de ellos ganaba, se mostraba su nombre y la palabra objetivo en una nueva página.
-	      	      	      	      	      	      	      	      
-La página que muestra al jugador ganador, como el resto de páginas, fue cambiando a lo largo del tiempo, sobre ella se hicieron muchas iteraciones que permitieron llegar al diseño final.
-
-\subsubsection{Fase 3}
-En la fase 3, se introdujo la opción de unir a traves del boton de Join del menú principal, además, se introdujo la posibilidad de ver en tiempo real el conocimiento adquirido de cada jugador sobre la palabra objetivo y se amplió la lista de palabras para que soportara diferentes idiomas, en concreto se introdujo el idioma español, pero el sistema es capaz de introducir nuevas listas de palabras de manera sencilla.
-	      	      	      	      
-Además, se prestó especial atención a casos donde hay un único jugador en la partida, por ejemplo, para estos casos se eliminó la cuenta atrás del principio de la partida.
-	      	      	      	      	
-Para poder probar con amigos y compañeros de trabajo, se desplegó la aplicación moviendo las aplicaciones a un servidor de DigitalOcean, levantando ambas aplicaciones utilizando los comandos que proveen tanto SvelteKit como Deno. Esta forma de levantar las aplicaciones se demostró muy lenta, ya que requería actualizar los repositorios del servidor usando Git, para después compilar y ejecutar las aplicaciones.
-
-\subsubsection{Fase 4} Para la fase 4, se arreglaron bugs presentes, además se desarrolló la posibilidad de levantar la aplicación utilizando Docker y Docker Compose.
-
-En este momento la aplicación ya se encontraba con madurez suficiente para que los cambios necesarios fueran aplicados sin necesidad de hacer refactorizaciones ni grandes cambios en los sistemas de la aplicación.    	      	      	      	      	
+\begin{itemize}
+	\item RNF1. La página web debe ser fácil de usar.
+	\item RNF2. Los colores usados en la página web deben ser característicos y reconocibles.
+	\item RNF3. El código único de cada partida debe contener pocos caracteres y ser reconocible, para que en caso de que sea transmitido de manera oral, este sea fácil de comunicar.
+	\item RNF4. Una vez haya terminado la partida, debe indicarse al los jugadores, quién ha ganado y cuál era la palabra objetivo.
+	\item RNF5. Desde la consola de despliegue, se puede atender al avance de la partida, siguiendo los eventos principales que ocurren.
+\end{itemize}
 
 
 \section{Arquitectura general}
@@ -62,14 +61,12 @@ La aplicación web es la herramienta con la cual el usuario interactúa, permite
 
 Está desarrollada utilizando SvelteKit para la realización de la lógica, y Tailwind para dar color y estilo.
 
-\tutor{Referencia la figura \ref{fig:web_diagram}. TODAS las figuras de la memoria deben estar referenciadas en el texto}
-El flujo principal que sigue el usuario para poder jugar una partida comienza abriendo la página web de la aplicación web, después, creará o se unirá a una partida ya creada, cuando todos los jugadores estén listos, el creador de la partida le dará al botón de comenzar, y después de una cuenta atrás, a todos los jugadores se les presentará un tablero de Wordle donde pondrán ir escribiendo sus intentos. Si alguno de los jugadores descubre la palabra, todos los jugadores verán una nueva pantalla con el nombre de la persona ganadora, en esta nueva pantalla, los jugadores pueden elegir entre salir de la partida o volver a jugar. En caso de que ningún jugador consiga ganar, se les presentará a todos una pantalla en el que se mostrará la palabra objetivo, y las mismas opciones que en el caso de haber habido un ganador.
-
+Como se puede ver en la figura \ref{fig:web_diagram}, el flujo principal que sigue el usuario para poder jugar una partida comienza abriendo la página web de la aplicación web, después, creará o se unirá a una partida ya creada, cuando todos los jugadores estén listos, el creador de la partida le dará al botón de comenzar, y después de una cuenta atrás, a todos los jugadores se les presentará un tablero de Wordle donde pondrán ir escribiendo sus intentos. Si alguno de los jugadores descubre la palabra, todos los jugadores verán una nueva pantalla con el nombre de la persona ganadora, en esta nueva pantalla, los jugadores pueden elegir entre salir de la partida o volver a jugar. En caso de que ningún jugador consiga ganar, se les presentará a todos una pantalla en el que se mostrará la palabra objetivo, y las mismas opciones que en el caso de haber habido un ganador.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[clip=true,width=\textwidth]{./diagrams/webapp_flow.pdf}
-	\caption{Diagrama de flujo de la aplicación web.\tutor{Este diagrama es muy grande como figura incluso en una página aislada, trata de reducirla}}
+	\includegraphics[clip=true,width=0.8\textwidth]{./diagrams/webapp_flow.pdf}
+	\caption{Diagrama de flujo de la aplicación web.}
 	\label{fig:web_diagram}
 \end{figure}
 
@@ -91,11 +88,11 @@ Los bordes redondeados hacen más amigable la aplicación, y sigue con tendencia
 
 El tablero dispone de un teclado para indicar las letras usadas, oscureciendo aquellas que no se encuentran en la palabra, marcando verde aquellas que se encuentran en la posición correcta y naranjas aquellas que no se encuentran en la posición correcta. El teclado es además completamente funcional.
 
-Toda la aplicación es \textit{responsive}, lo cual significa que es adaptable para cualquier pantalla de cualquier dispositivo, por ejemplo, asi es que como se ve la aplicación en un telefono movil de la compañia Apple. \tutor{Reduce la figura para que quepa en esta misma página}
+Toda la aplicación es \textit{responsive}, lo cual significa que es adaptable para cualquier pantalla de cualquier dispositivo, por ejemplo, asi es que como se ve la aplicación en un telefono movil de la compañia Apple.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[clip=true,width=0.75\textwidth]{./images/design/cowordle_iphone.png}
+	\includegraphics[clip=true,width=0.5\textwidth]{./images/design/cowordle_iphone.png}
 	\caption{Aplicación web en un dispositivo móvil.}
 	\label{fig:web_iphone}
 \end{figure}
@@ -106,9 +103,10 @@ Además, todas las vistas de la aplicación cuentan con un botón de informació
 
 
 \subsubsection{Comunicación websocket}
+\label{sec:ws_comms}
 La comunicación websocket ha sido el punto de aprendizaje principal, según se fueron desarrollando las diferentes partes para el trabajo, se fue definiendo lo que acabó siendo una serie de reglas sobre la comunicación diferenciando estas en tres tipos de comunicación diferentes.
 
-Para entender estos tres tipos de comunicación hay que entender primero el sistema de comunicación HTTP. En este tipo de comunicación es el cliente el que inicia la llamada y es el servidor el que responde a esta. Sin embargo, en websockets, el servidor puede enviar información al cliente sin que sea \tutor{el cliente, no? indícalo} el iniciador de la llamada. Por ello Websockets funciona por sistemas de eventos, donde el socket puede enviar y esperar comunicación (comunicación bidireccional).
+Para entender estos tres tipos de comunicación hay que entender primero el sistema de comunicación HTTP. En este tipo de comunicación es el cliente el que inicia la llamada y es el servidor el que responde a esta. Sin embargo, en websockets, el servidor puede enviar información al cliente sin que sea el cliente el iniciador de la llamada. Por ello Websockets funciona por sistemas de eventos, donde el socket puede enviar y esperar comunicación (comunicación bidireccional).
 
 Una vez entendida la comunicación HTTP y la comunicación websocket, y las diferencias entre ambas, va a quedar claro porque en CoWordle se diferencia entre tres tipos distintos de comunicación.
 
@@ -117,26 +115,26 @@ Estos eventos se clasifican como eventos OUT, ya que el cliente envía informaci
 
 En segundo lugar tenemos la comunicación servidor - cliente, un ejemplo de esto es el recién descrito \textit{player\_disconnected}, en el que el servidor envía un evento a los jugadores de la sala. Este tipo de eventos se clasifica en CoWordle como IN, porque el cliente recibe información del servidor.
 
-Por último lugar el último tipo de comunicación se clasifica como DIALOGUE, y se explica porque \tutor{'se explica porque' es una construcción extraña, trata de refrasearlo} es comunicación cliente - servidor - cliente, es decir, es el cliente el que comienza la comunicación, el servidor procesa la respuesta y se la envía al cliente con el mismo nombre de evento con el que la llamada había comenzado, hasta que la llamada no ha sido respondida, el cliente se quedará esperando una respuesta de manera asíncrona, es decir, sin bloquear al resto de la aplicación.
+En último lugar el tercer tipo de comunicación se clasifica como DIALOGUE, y se corresponde con comunicación cliente - servidor - cliente, es decir, es el cliente el que comienza la comunicación, el servidor procesa la respuesta y se la envía al cliente con el mismo nombre de evento con el que la llamada había comenzado, hasta que la llamada no ha sido respondida, el cliente se quedará esperando una respuesta de manera asíncrona, es decir, sin bloquear al resto de la aplicación.
 
 \subsection{Servidor Websockets}
-El servidor de websockets está implementado utilizando Deno y una librería que ayuda al manejo de eventos para los websockets llamada Socket.io. Deno se utiliza para levantar el servidor y para recibir peticiones HTTP, aunque existen pocos endpoints para la comunicación HTTP, existe un endpoint necesario para que Socket.io cree la conexión de Websockets, y uno más para la creación de la partida. 
-\tutor{Otra frase muy larga, trata de dividirla. Realmente no aporta mucho decir que hay pocos endpoints, menciona simplemente que hay uno para crear la conexión}
+El servidor de websockets está implementado utilizando Deno y una librería que ayuda al manejo de eventos para los websockets llamada Socket.io. Deno se utiliza para levantar el servidor y para recibir peticiones HTTP, existe un endpoint necesario para que Socket.io cree la conexión de Websockets, y uno más para la creación de la partida. 
 
 \subsubsection{Sistema de eventos}
 El servidor responde a peticiones HTTP y de Websockets creando eventos que son respondidos de manera secuencial por funciones lambda, cada función sólo responde a un evento, devolviendo una respuesta.
 Javascript es una tecnología uni-hilo, pero es capaz de realizar concurrencia utilizando primitivas asíncronas llamadas promesas, cuando una función marcada como asíncrona se ejecuta, el motor de Javascript la guarda como evento, este evento será manejado cuando el motor de Javascript lo considere oportuno. Por ejemplo, cuando la CPU está esperando una lectura de la memoría, Javascript puede cambiar el contexto y procesar otras funciones. De está manera, Javascript es capaz de maximizar la utilización de su hilo de ejecución.
 
 \subsubsection{Eventos disponibles}
-El servidor permite la comunicación utilizando las siguientes rutas HTTP:Soso\tutor{Soso?}
+El servidor permite la comunicación cliente-servidor utilizando las siguientes rutas HTTP:
 
 \tutor{qué distingue estos eventos de llamadas HTTP como los que se muestran más abajo?}
+\alumno{No acabo de ver como solucionar esto, he llamado 'eventos' a las rutas de WebSockets, y he dejado las 'normales' como rutas HTTP, pero no se que más puedo hacer para solucionarlo}
 \begin{itemize}
 	\item \textit{/create-route}, genera un nuevo identificador de partida. Este identificador es fundamental para la comunicación entre el cliente y el servidor ya que permite la identificación de la partida para realizar las operaciones necesarias.
-	\item \textit{/testing/solution}, este endpoint está disponible para poder realizar un tests de integración de flujo completo.correcta.
+	\item \textit{/testing/solution}, este endpoint está disponible para poder realizar un tests de integración de flujo completo.
 \end{itemize}
 
-A parte de las rutas HTTP, el servidor permite la comunicación Websocket utilizando los siguientes eventos:
+A parte de las rutas HTTP, el servidor permite la comunicación WebSocket utilizando los siguientes eventos:
 
 \begin{itemize}
 	\item \textit{setup} es un evento de tipo diálogo que une a un jugador a la partida, es necesario enviar como parámetros el código de la sala generado por /create-room y el nombre del usuario que se va a unir a la partida, este evento avisa a todos los demás jugadores de la sala que se ha unido el jugador emitiendo el evento \textit{player\_connection}.
@@ -157,7 +155,7 @@ Como el objetivo del trabajo era el aprendizaje de la comunicación bidirecciona
 \end{itemize}
 
 \subsubsection{Identificador de partida}
-Cada partida tiene un identificador único de seis cifras generado pseudo-aleatoriamente llamado roomCode. El roomCode lo generará el servidor de websockets tras la petición de /create-room,\tutor{Aquí de nuevo, la coma no tiene sentido. Es muy extraño que siempre te refieras al servidor de websocket pero este atienda peticiones http} este endpoint HTTP únicamente reserva el código generado para la partida, utilizando ese código los jugadores son capaces de unirse a la partida inicialmente, el código también se utiliza para realizar la comunicación cliente-servidor.
+Cada partida tiene un identificador único de seis cifras generado pseudo-aleatoriamente llamado roomCode. El roomCode lo generará el servidor tras la petición HTTP. Esta ruta únicamente reserva el código generado para la partida, utilizando ese código los jugadores son capaces de unirse a la partida inicialmente, el código también se utiliza para realizar la comunicación cliente-servidor.
 
 
 \section{Diseño e Implementación}
@@ -165,7 +163,7 @@ Cada partida tiene un identificador único de seis cifras generado pseudo-aleato
 \subsection{La reutilización de componentes}
 Svelte, la tecnología que he usado para hacer los componentes de front, se basa en la creación de componentes que puedan ser reutilizados en diferentes situaciones, la reutilización de código se considera buena práctica en todo el ámbito de la ingeniería informática. Por ello parece importante destacar que una buena elección de la tecnologías es solo la base, y es necesario hacer un buen uso de estas para poder llegar a un buen resultado, por ello en este apartado quiero destacar un buen uso de componentes de Svelte.
 
-Existe un componente que se reutiliza varias veces a lo largo de la aplicación, el componente llamado $<$Word$>$\tutor{Aquí estaba escapando mal los caracteres}, que se encuentra en el archivo Word.svelte de la aplicación cowordle-webapp.
+Existe un componente que se reutiliza varias veces a lo largo de la aplicación, el componente llamado \textit{$<$Word$>$}, que se encuentra en el archivo \textit{Word.svelte} de la aplicación cowordle-webapp.
 
 Este componente se utiliza como botones estilizados en el menú principal, en este primer uso, el componente muestra la palabra elegida por el desarrollador, indicando al usuario que es un botón con el que puede interaccionar.
 
@@ -214,7 +212,7 @@ Comenzando por el principio, necesitamos un componente que sea capaz de mostrar 
 	\label{fig:comp_simple_code}
 \end{figure}
 
-Así es como se utiliza el componente Word, para mostrar el texto de la primera imagen simplemente es necesario definir la palabra a mostrar y su longitud.
+Así es como se utiliza el componente \textit{$<$Word$>$}, para mostrar el texto de la primera imagen simplemente es necesario definir la palabra a mostrar y su longitud.
 
 También queremos que el componente reciba texto del usuario dinámicamente, esto sería posible reprogramando al componente o creando uno nuevo, pero realmente ya tenemos esta funcionalidad sin necesidad de programar nada más. En lugar de utilizar como argumento para el parámetro word un string fijo, podemos utilizar una variable, e indicarle a Svelte que esa variable es reactiva utilizando, la directiva bind, que recalcula el componente cada vez que cambia el contenido de la variable pasada.
 
@@ -225,18 +223,17 @@ También queremos que el componente reciba texto del usuario dinámicamente, est
 	\label{fig:comp_dyn_code}
 \end{figure}
 
-En este caso estamos utilizando la directiva bind para hacer que el componente se redibuje cada vez que cambia la variable code. Esto significa que nuestro componente es ajeno al texto que presentamos, y es responsabilidad de otros componentes seleccionar el texto a mostrar.
+En este caso estamos utilizando la directiva \textit{bind} para hacer que el componente se redibuje cada vez que cambia la variable code. Esto significa que nuestro componente es ajeno al texto que presentamos, y es responsabilidad de otros componentes seleccionar el texto a mostrar.
 
 Parece un pequeño detalle, pero esta flexibilidad de desarrollo simplifica el código haciéndolo muy reutilizable y componible.
 
-La primera implementación del componente Word\tutor{trata de referirte al componente siempre igual} se hizo cuando se comenzó el proyecto,  y sin mucho cambio, ha llegado a utilizarse en otras partes de la aplicación en las que no se había llegado a pensar cuando se creó el componente, y eso demuestra que se realizó un buen diseño inicialmente.
+La primera implementación del componente \textit{$<$Word$>$} se hizo cuando se comenzó el proyecto,  y sin mucho cambio, ha llegado a utilizarse en otras partes de la aplicación en las que no se había llegado a pensar cuando se creó el componente, y eso demuestra que se realizó un buen diseño inicialmente.
 
 \subsection{Tipados en la comunicación websocket}
-Como se ha explicado en el apartado XX \tutor{Te falta la referencia}, la comunicación websocket con el servidor de CoWordle se clasifica en tres grupos, según sea cliente - servidor, servidor - cliente y cliente - servidor - cliente. En este apartado se va a explicar cómo de fácil es realizar esta comunicación independientemente del tipo de esta.
+Como se ha explicado en el apartado \ref{sec:ws_comms}, la comunicación websocket con el servidor de CoWordle se clasifica en tres grupos, según sea cliente - servidor, servidor - cliente y cliente - servidor - cliente. En este apartado se va a explicar cómo de fácil es realizar esta comunicación independientemente del tipo de esta.
 
-Toda esta capa de tipado se construye como un wrapper sobre el socket expuesto por Socket.IO. Esto permite utilizar la potencia de Socket.IO, mientras se provee la seguridad de tipos y la comodidad se autocompleciones \tutor{del auto-completado ...} del IDE.
+Toda esta capa de tipado se construye como un wrapper sobre el socket expuesto por Socket.IO. Esto permite utilizar la potencia de Socket.IO, mientras se provee la seguridad de tipos y la comodidad del auto-completado del IDE, además permite la utilización de distintos métodos del wrapper según el tipo de comunicación que vayamos a realizar, siendo estos: \textit{emit} para los eventos cliente-servidor, \textit{on} para los eventos servidor-cliente, y \textit{dialogue} para los eventos cliente-servidor-cliente.
 
-\tutor{Aprovecha para recordar en una línea rápidamente cuales son los 3 tipos de comunicación que vas a usar (los mencionas más arriba, pero nunca viene mal recordárselo al lector)}
 
 \subsubsection{Comunicación IN}
 Para la comunicación IN, es el servidor quien envía el evento al cliente, por ello el cliente debe quedarse esperando a que el servidor envíe la petición.
@@ -251,7 +248,7 @@ El wrapper expone un método \textit{on}, que permite añadir un callback cuando
 	}); 
 \end{mytypescript}
 
-En el ejemplo\tutor{usa mejor 'En el fragmento ...'} del código\tutor{Trata de usar siempre máyusculas para 'Figura', 'Código', etc} \ref{alg:ws_in_usage} se puede observar cómo se está definiendo que cuando el evento \textit{player\_connected} ocurra, la función lambda debe ejecutarse. El evento \textit{player\_connected} está declarado utilizando tipos de la siguiente manera:
+En el framento del Código \ref{alg:ws_in_usage} se puede observar cómo se está definiendo que cuando el evento \textit{player\_connected} ocurra, la función lambda debe ejecutarse. El evento \textit{player\_connected} está declarado utilizando tipos de la siguiente manera (fragmento de Código \ref{alg:player_connected_type}).
 
 \begin{mytypescript}[float={!h},caption={Ejemplo de declaración de la comunicación IN.},label={alg:player_connected_type}]
 	export type WebsocketInEvent = {
@@ -276,7 +273,7 @@ Todo esto es posible gracias al poderoso sistema de genéricos proporcionado por
 	}
 \end{mytypescript}
 
-Como se puede ver en la definición del método \textit{on}, el primer parámetro es el nombre del evento, que está tipado como el genérico \textit{TEvent} que está a su vez definido como un nombre de evento de la lista de eventos IN. El segundo parámetro es el callback a que se llamará cuando el evento se ejecute, este parámetro está tipado como una función que recibe un argumento del tipo \textit{TArgs}, que es de la lista de eventos IN, aquel que coincide con la el genérico \textit{TEvent}. Todo ello ofrece suficiente información al IDE para ser capaz de autocompletar todo lo necesario para que el programador esté seguro de lo que está programando es correcto, y además, mejora la mantenibilidad a largo plazo, porque en caso de cambiar el tipado de algún evento IN de la lista de eventos, el cambio sería reflejado automáticamente en toda la aplicación y en caso de que no coincidieran los nuevos tipos con los antiguos, Typescript indicaría al programador donde ha ocurrido el fallo de tipado.
+Como se puede ver en la definición del método \textit{on} (fragmento de Código \ref{alg:on_method}), el primer parámetro es el nombre del evento, que está tipado como el genérico \textit{TEvent} que está a su vez definido como un nombre de evento de la lista de eventos IN. El segundo parámetro es el callback a que se llamará cuando el evento se ejecute, este parámetro está tipado como una función que recibe un argumento del tipo \textit{TArgs}, que es de la lista de eventos IN, aquel que coincide con la el genérico \textit{TEvent}. Todo ello ofrece suficiente información al IDE para ser capaz de autocompletar todo lo necesario para que el programador esté seguro de lo que está programando es correcto, y además, mejora la mantenibilidad a largo plazo, porque en caso de cambiar el tipado de algún evento IN de la lista de eventos, el cambio sería reflejado automáticamente en toda la aplicación y en caso de que no coincidieran los nuevos tipos con los antiguos, Typescript indicaría al programador donde ha ocurrido el fallo de tipado.
 
 \subsubsection{Comunicación OUT}
 La comunicación OUT es aquella que ocurre en dirección cliente - servidor, el cliente solo pretende comunicar información al servidor, sin esperar nada de respuesta.
@@ -289,9 +286,9 @@ La comunicación OUT es aquella que ocurre en dirección cliente - servidor, el 
 	}
 \end{mytypescript}
 
-En este ejemplo, se puede ver cómo se emite un evento al servidor, para emitir un evento necesitamos el nombre del evento a emitir, y necesitamos también la información que queremos enviar por el socket.
+En el ejemplo \ref{alg:emit_usage} se puede ver cómo se emite un evento al servidor, para emitir un evento necesitamos el nombre del evento a emitir, y necesitamos también la información que queremos enviar por el socket.
 
-Al igual que la comunicación IN, el sistema dispone de un lugar donde definir todos los eventos OUT, para el ejemplo mostrado en la figura anterior, el evento está definido de la siguiente manera:
+Al igual que la comunicación IN, el sistema dispone de un lugar donde definir todos los eventos OUT, para el ejemplo mostrado en la figura anterior, el evento está definido como se ve en el fragmento de Código \ref{alg:start_game_type}.
 
 \begin{mytypescript}[float={!h},caption={Ejemplo de declaración de la comunicación OUT.},label={alg:start_game_type}]
 	export type WebsocketOutEvent = {
@@ -314,25 +311,27 @@ Esta definición es la versión inversa de la mostrada en los eventos IN, lo que
 	}
 \end{mytypescript}
 
-Si nos adentramos en la declaración del método \textit{Emit}, que como ya hemos visto es el que se utiliza para la comunicación OUT, volvemos a ver la aparición de un tipo genérico \textit{TEvent}, con la diferencia de que este \textit{TEvent} es un evento de la lista de eventos OUT, la otra diferencia con el método \textit{on}, es que en este utilizamos el argumento \textit{args} como el argumento del método \textit{emit} de Socket.IO, que es el que realizara la petición siguiendo el estándar websocket.
+Si nos adentramos en la declaración del método \textit{Emit} (fragmento de Código \ref{alg:emit_method}), que como ya hemos visto es el que se utiliza para la comunicación OUT, volvemos a ver la aparición de un tipo genérico \textit{TEvent}, con la diferencia de que este \textit{TEvent} es un evento de la lista de eventos OUT, la otra diferencia con el método \textit{on}, es que en este utilizamos el argumento \textit{args} como el argumento del método \textit{emit} de Socket.IO, que es el que realizara la petición siguiendo el estándar websocket.
 
 El método \textit{emit} ofrece al programador la misma seguridad y mantenibilidad que el método \textit{on}, además, su similitud de uso, ayuda a que sea más fácil usarlo por programadores de todos los niveles.
 
 \subsubsection{Comunicación Dialogue}
 En la comunicación de tipo Dialogue, el cliente envía un evento al servidor, esperando una respuesta de vuelta. Este tipo de comunicación es más compleja de implementar que las otras, pero su uso en CoWordle sigue siendo muy simple.
 
-\begin{mytypescript}[float={!h},caption={Ejemplo de uso del método \textit{dialogue}.},label={alg:etiqueta}]
+\begin{mytypescript}[float={!t},caption={Ejemplo de uso del método \textit{dialogue}.},label={alg:dialogue_example}]
 	const { localPlayer, players, hostPlayer } = await this.socket.dialogue("setup", {
 		playerName: this.localPlayer.name,
 		roomCode: this.roomCode,
 	});
 \end{mytypescript}
 
-Como se puede ver en el ejemplo, para usar un evento de tipo Dialogue tan solo tenemos que llamar al método \textit{dialogue} del wrapper. \tutor{¿Qué nos ofrece 'dialogue' en este ejemplo que no nos ofrezca una petición REST al uso?} El primer argumento define el evento que vamos a emitir y sobre el que vamos a esperar la respuesta. El segundo argumento describe los datos que vamos a enviar. Como respuesta obtendremos una \textit{promesa} de la respuesta que recibiremos del servidor cuando este responda.
+Como se puede ver en el ejemplo \ref{alg:dialogue_example}, para usar un evento de tipo Dialogue tan solo tenemos que llamar al método \textit{dialogue} del wrapper. Aunque el tipo Dialogue es muy similar a lo que es una petición HTTP al uso, usando el evento permitimos que toda la comunicación del mismo tipo (comunicación en tiempo real sobre el juego) se realice utilizando un único canal de comunicación, además, nos permite utilizar la información guardada en el socket desde el servidor.
 
-Para declarar un evento del tipo Dialogue, se utiliza una sintaxis muy cómoda, que permite diferenciar en un solo vistazo los tipos que vamos a enviar y los tipos que vamos a recibir.
+El primer argumento define el evento que vamos a emitir y sobre el que vamos a esperar la respuesta. El segundo argumento describe los datos que vamos a enviar. Como respuesta obtendremos una \textit{promesa} de la respuesta que recibiremos del servidor cuando este responda.
 
-\begin{mytypescript}[float={!h},caption={Ejemplo de declaración del tipo de evento Dialogue.},label={alg:etiqueta}]
+Para declarar un evento del tipo Dialogue, se utiliza una sintaxis muy cómoda, que permite diferenciar en un solo vistazo los tipos que vamos a enviar y los tipos que vamos a recibir (fragmento de Código \ref{alg:dialogue_usage}).
+
+\begin{mytypescript}[float={!t},caption={Ejemplo de declaración del tipo de evento Dialogue.},label={alg:dialogue_usage}]
 	export type WebSocketDialogueEvent = {
 		...
 		setup: (args: { roomCode: string; playerName: string }) => {
@@ -345,11 +344,13 @@ Para declarar un evento del tipo Dialogue, se utiliza una sintaxis muy cómoda, 
 	};
 \end{mytypescript}
 
-El evento se declara como una función donde los argumentos son los datos a enviar a servidor, y cuya respuesta son los tipos que vamos a recibir del servidor. 
+El evento se declara como una función donde los argumentos son los datos a enviar a servidor, y cuya respuesta son los tipos que vamos a recibir del servidor.
 
-Como explicaba anteriormente, la implementación es un poco más compleja que en los tipos de comunicación anteriores. \tutor{Recuerda que SIEMPRE tienes que mencionar cualquier Figura o fragmento de código que aparezca en la memoria. En este caso sospecho que te estas refiriendo al Código 4.9}
+Como explicaba anteriormente, la implementación es un poco más compleja que en los tipos de comunicación anteriores, como se ve en el fragmento de Código \ref{alg:dialogue_method}. El primer parámetro coincide con los de los otros tipos de comunicación, volviendo a usar el \textit{TEvent}. El segundo argumento extrae los parámetros de la función declarada como evento. El valor de retorno del método se define como una \textit{promesa} del valor de retorno definido en función del evento.
 
-\begin{mytypescript}[float={!h},caption={Implementación del método \textit{dialogue}.},label={alg:etiqueta}]
+Con esta implementación estamos manteniendo la sencillez de uso que teníamos con los otros tipos de comunicación, pero estamos creando una comunicación más clásica, donde el cliente y el servidor se comunican como si fuera una petición HTTP normal.
+
+\begin{mytypescript}[float={!t},caption={Implementación del método \textit{dialogue}.},label={alg:dialogue_method}]
 	async dialogue<TEvent extends EventName<WebSocketDialogueEvent>, TEventMethod extends WebSocketDialogueEvent[TEvent]>(
 	event: TEvent,
 	params: Parameters<TEventMethod>[0],
@@ -368,23 +369,19 @@ Como explicaba anteriormente, la implementación es un poco más compleja que en
 	}
 \end{mytypescript}
 
-El primer parámetro coincide con los de los otros tipos de comunicación, volviendo a usar el \textit{TEvent}. El segundo argumento extrae los parámetros de la función declarada como evento. El valor de retorno del método se define como una \textit{promesa} del valor de retorno definido en función del evento.
-
-Con esta implementación estamos manteniendo la sencillez de uso que teníamos con los otros tipos de comunicación, pero estamos creando una comunicación más clásica, donde el cliente y el servidor se comunican como si fuera una petición HTTP normal.
-
 
 \section{Pruebas}
 
-Como el proyecto está dividido en dos repositorios distintos con tecnologias distintas, es necesario ver como se han realizado los tests en ambos repositorios.
+Como el proyecto está dividido en dos repositorios distintos con tecnologias distintas, es necesario explicar como se han realizado los tests en ambos repositorios.
 
 \subsection{Webapp}
-Para la webapp se han realizado pruebas principalmente de componentes, para ello se ha utilizado Playwright \tutor{Indíca claramente que tipo de test estás ejecutando}. Como se ha explicado en la sección de tecnologías, Playwright es la librería recomendada para el testeo de componentes.
+Para la webapp se han realizado pruebas unitarias de componentes, para ello se ha utilizado Playwright. Como se ha explicado en la sección de tecnologías, Playwright es la librería recomendada para el testeo de componentes.
 
 Playwright utiliza un navegador \textit{headless} internamente para comprobar que los componentes están funcionando. Además, permite seleccionar qué tecnología de navegador se quiere probar. Para CoWordle se realizan tests en todas las tecnologías principales, Firefox, Chromium y Webkit.
 
 Los tests realizados incluyen comprobaciones para ver si los componentes son montados correctamente en la pantalla, si los componentes muestran los textos correctamente y si los colores, especialmente en los colores de juego, se muestran correctamente.
 
-Un ejemplo de test donde se ha comprobado si el componente se monta correctamente, se puede observar en el archivo tests/components/word.test.ts:
+Un ejemplo de test donde se ha comprobado si el componente se monta correctamente, se puede observar en el archivo \textit{tests/components/word.test.ts}. En este test se puede comprobar que primero se monta el componente con los props necesarios, y después se realiza la comprobación de que el componente sea visible.
 
 \begin{mytypescript}[float={!h},caption={Ejemplo test visibilidad componente.},label={alg:test_visibility}]
 	test("component is displayed correctly", async ({ mount }) => {
@@ -399,9 +396,8 @@ Un ejemplo de test donde se ha comprobado si el componente se monta correctament
 	});
 \end{mytypescript}
 
-En este test se puede comprobar que primero se monta el componente con los props necesarios, y después se realiza la comprobación de que el componente sea visible.
-
 Un ejemplo de test donde se comprueba el contenido textual de un componente se puede ver en el mismo archivo que el test anterior.
+En este test (fragmento de Código \ref{alg:test_text}) se puede comprobar cómo se monta el componente y se prueba que el texto interno del componente coincide con lo esperado.
 
 \begin{mytypescript}[float={!h},caption={Ejemplo test con texto.},label={alg:test_text}]
 	test("contents are displayed correctly", async ({ mount }) => {
@@ -417,10 +413,7 @@ Un ejemplo de test donde se comprueba el contenido textual de un componente se p
 	});
 \end{mytypescript}
 
-\tutor{Estas hablando de lo mismo, por lo que el salto de linea no tiene sentido. Recuerda referencias las figuras y fragmentos de código que aparezcan en la memoria, ya que puede ser muy confuso lo que para ti parece obvio}
-En este test se puede comprobar cómo se monta el componente y se prueba que el texto interno del componente coincide con lo esperado.
-
-Un ejemplo de test donde se comprueba que los colores de las letras se puede volver a ver en el archivo ya visto.
+Un ejemplo de test donde se comprueba que los colores de las letras se puede volver a ver en el archivo ya visto (fragmento de Código \ref{alg:test_colors}).
 
 \begin{mytypescript}[float={!h},caption={Ejemplo test colores.},label={alg:test_colors}]
 	test("colors are shown correctly", async ({ mount }) => {
@@ -453,7 +446,7 @@ Para poder ejecutar los tests en local, es necesario utilizar el comando \ref{al
 	$ npm run test-ct
 \end{mypython}
 
-Una vez ejecutado el comando, Playwright comenzará a realizar los tests, una vez haya terminado nos abrirá una página web donde mostrará los resultados.
+Una vez ejecutado el comando, Playwright comenzará a realizar los tests, una vez haya terminado nos abrirá una página web donde mostrarán los resultados.
 
 \begin{figure}[H]
 	\centering
@@ -462,7 +455,7 @@ Una vez ejecutado el comando, Playwright comenzará a realizar los tests, una ve
 	\label{fig:playwright_tests_result}
 \end{figure}
 
-En esta página \tutor{¿Qué página? da más detalles al lector de lo que está viendo} podemos inspeccionar cada test realizado, pudiendo ver las comprobaciones que se han realizado en cada uno, y en caso de haber fallado, la razón del error.
+En la página mostrada en la Figura \ref{fig:playwright_tests_result} podemos inspeccionar cada test realizado, pudiendo ver las comprobaciones que se han realizado en cada uno, como se puede ver en la Figura \ref{fig:playwright_test_result}, y en caso de haber fallado, la razón del error.
 
 \begin{figure}[H]
 	\centering
@@ -472,17 +465,12 @@ En esta página \tutor{¿Qué página? da más detalles al lector de lo que est�
 \end{figure}
 
 \subsubsection{Problemas encontrados}
-Playwright puede llegar a ser complejo de instalar según sea el sistema del usuario a ejecutar los tests. Para la realización de esta práctica se han dedicado varias horas únicamente a conseguir que Playwright consiga ejecutar los tests en el entorno en el cual se ha realizado esta (WSL 2).
-
-\tutor{Es muy delicado hablar de los errores que has encontrado sin hablar de soluciones. Recuerda que en AIS vimos que los test deberían poder ejecutarse en cualquier entorno. ¿Podría yo ejecutar los test? ¿Que necesitaría para hacer (qué contexto)?}
-
-Además, en ocasiones Playwright falla iniciando el contexto del navegador y no llega a ejecutar algunos tests correctamente.
+Playwright puede llegar a ser complejo de instalar según sea el sistema del usuario a ejecutar los tests. Para la realización de este TFG se han dedicado varias horas únicamente a conseguir que Playwright consiga ejecutar los tests en el entorno en el cual se ha realizado esta (WSL 2 - Ubuntu). Al final el problema se soluciono instalando las librerías necesarias manualmente, en lugar de utilizar el instalador automático. Si durante la instalación de las librerías ocurre el sistema operativo no encuentra alguna, sera necesario limpiar la cache de librerías, en mi caso APT tal y como se indica en \cite{playwright_lib_error}.
 
 \subsection{Servidor de Websockets}
-Los tests para el servidor de Websockets se han centrado en el testeo de la comprobación de palabras para la generación de resultados Wordle.
-\tutor{Comenta que tipo de test es, cuandos test hay, etc}
+Los tests para el servidor de Websockets se han centrado en el testeo unitario de la comprobación de palabras para la generación de resultados Wordle, además se ha comprobado con test unitarios el comportamiento de alguna función de dominio.
 
-Con la flexibilidad de testeo que ofrece Deno, se ha programado un sistema que es capaz de generar tests unitarios para las palabras que se requiera \tutor{Siempre que referencias algo, pon lo que es, en este caso Código~\ref{alg:deno_tests}}(\ref{alg:deno_tests}). Para ello, se genera un test con varios steps (pasos), cada step es una nueva palabra para probar, todo ello es posible generando una estructura de datos que almacene el intento del jugador, y el resultado que se debería de obtener tras el intento. Después, tan solo es necesario recorrer la estructura de datos generando los steps \ref{alg:deno_tests_2}.
+Con la flexibilidad de testeo que ofrece Deno, se ha programado un sistema que es capaz de generar tests unitarios para las palabras que se requiera (fragmento de Código \ref{alg:deno_tests}). Para ello, se genera un test con varios steps (pasos), cada step es una nueva palabra para probar, todo ello es posible generando una estructura de datos que almacene el intento del jugador, y el resultado que se debería de obtener tras el intento. Después, tan solo es necesario recorrer la estructura de datos generando los steps (fragmento de Código \ref{alg:deno_tests_2} ).
 
 \begin{mytypescript}[float={!h},caption={Implementación del sistema de creación de test automáticos.},label={alg:deno_tests}]
 	const validations: WordTest[] = [
@@ -557,17 +545,39 @@ Existen varias maneras de ejecutar la aplicación, la opción más sencilla es u
 \subsection{Utilizando Docker}
 Utilizando Docker, podemos levantar la aplicación al completo, tanto la webapp, como el servidor de websockets. Esta es la opción más sencilla y la manera recomendada de levantar la aplicación para su despliegue.
 
-Para levantar la aplicación utilizando Docker necesitamos tener Docker y Docker Compose instalado. Una vez instalado podemos utilizar el siguiente archivo docker-compose.yaml. Este archivo instruye\tutor{Intruye sugiere un contexto de aprendizaja (quizás una para traducción), realmente es simplemente una forma de ejecutar aplicaciones docker multi-contenedor} a Docker como queremos que levante la aplicación.
+Para levantar la aplicación utilizando Docker necesitamos tener Docker y Docker Compose instalado. Una vez instalado podemos utilizar el siguiente archivo \textit{docker-compose.yaml} (fragmento de Código \ref{alg:docker_compose}). Este archivo indica a Docker que aplicaciones (llamadas servicios) queremos que se ejecuten, aqui podemos agregar aplicaciones propias, o de terceros.
 
-En el archivo se muestra \tutor{Qué archivo? Que se muestra dónde? Si es el docker-compose.yml, entonces esto debería ir en el párrafo anterior} que se van a desplegar dos aplicaciones, la primera es la webapp, la segunda es el servidor de websockets. Además, se crea una red entre ambas aplicaciones que facilita la comunicación entre estas.
+Para desplegar CoWordle, todos las aplicaciones que necesitamos que se ejecuten son propias. La primera es la webapp, y la segunda es el servidor de websockets. Además, en el archivo estamos creando una red entre ambas aplicaciones que permite la comunicación interna de ambas, este paso no es necesario para realizar el despliegue en Okteto, pero si puede llegar a ser necesario en caso de realizar el despliegue en otros sistemas. Las variables de entorno las utiliza 
+
+\begin{mypython}[float={!h},caption={\textit{docker-compose.yaml} para despliegue en Okteto.},label={alg:docker_compose}]
+	version: "3.9"
+	services:
+	webapp:
+		image: "lorwen/cowordle-webapp:latest"
+		ports:
+		- 4173:4173
+		networks:
+		- inner-network
+		environment:
+		- PUBLIC_WEBSOCKET_URL=https://websockets-dokest.cloud.okteto.net
+		- PUBLIC_WEBSOCKET_EXTERNAL_URL=https://websockets-dokest.cloud.okteto.net
+		depends_on:
+		- websockets
+	websockets:
+		image: "lorwen/cowordle-ws:latest"
+		ports:
+		- 9000:9000
+		networks:
+		- inner-network
+	networks:
+		inner-network:
+\end{mypython}
 
 Una vez dispongamos de un archivo \textit{docker-compose.yaml}, podemos utilizar el siguiente comando para levantar la aplicación.
 
 \begin{mypython}[float={!h},caption={Comando para levantar todas las aplicaciones utilizando Docker.},label={sh:run_docker}]
 	$ docker compose up
 \end{mypython}
-
-\tutor{De nuevo, es muy probable que el lector trate de ejecutar este comando y encuentre  el error que te mandé por correo. Sería interesante mstrar aquí el archivo docker-compose, indicando los contenedores que lanza, porque si te fijas, la sección aporta muy poca información a tu trabajo, es casi una explicación de lo que es Docker y Docker Compose.}
 
 Si queremos levantar la aplicación en segundo plano, podemos utilizar el siguiente comando en su lugar.
 
@@ -589,24 +599,23 @@ La primera opción es la recomendada para personas que no conozcan la tecnologí
 	\item El \textbf{Servidor websockets} se encuentra en el repositorio de GitHub \href{https://github.com/Dokest/cowordle-ws}.
 \end{itemize}
 
-También es posible descargar el código utilizando git con los siguientes comandos:
+También es posible descargar el código utilizando git con los comandos mostrados (\ref{sh:git_clone_repos}):
 
-\begin{mypython}[float={!h},caption={Comandos git para clonar los repositorios.},label={sh:git_clone_repos}]
+\begin{mypython}[float={!t},caption={Comandos git para clonar los repositorios.},label={sh:git_clone_repos}]
 	$ git clone https://github.com/Dokest/cowordle-ws.git
 	$ git clone https://github.com/Dokest/cowordle-webapp.git
 \end{mypython}
 
-Una vez descargado el código, tenemos que levantar ambas aplicaciones:
-Para\tutor{después de :, minúscula} levantar la webapp, será necesario utilizar el comando:
+Una vez descargado el código, tenemos que levantar ambas aplicaciones: para levantar la webapp, será necesario utilizar el comando \ref{sh:run_webapp}.
 
-\begin{mypython}[float={!h},caption={Comando para levantar la webapp.},label={sh:run_webapp}]
+\begin{mypython}[float={!t},caption={Comando para levantar la webapp.},label={sh:run_webapp}]
 	$ npm run dev
 \end{mypython}
 
-Para levantar el servidor de websockets, será necesario utilizar el comando\tutor{Siempre referencias!}:
+Para levantar el servidor de websockets, será necesario utilizar el comando \ref{sh:run_ws_server}.
 
-\begin{mypython}[float={!h},caption={Comando para levantar el servidor de Websockets.},label={sh:run_ws_server}]
+\begin{mypython}[float={!t},caption={Comando para levantar el servidor de Websockets.},label={sh:run_ws_server}]
 	$ deno task dev
 \end{mypython}
 
-Una vez levantadas ambas aplicaciones, podemos acceder a CoWordle utilizando la URL \href{http://localhost:4173/}.
+Una vez levantadas ambas aplicaciones, podemos acceder a CoWordle utilizando la URL \href{http://localhost:4173/}{http://localhost:4173/}.
