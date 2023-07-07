@@ -121,22 +121,11 @@ En último lugar el tercer tipo de comunicación se clasifica como DIALOGUE, y s
 El servidor de websockets está implementado utilizando Deno y una librería que ayuda al manejo de eventos para los websockets llamada Socket.io. Deno se utiliza para levantar el servidor y para recibir peticiones HTTP, existe un endpoint necesario para que Socket.io cree la conexión de Websockets, y uno más para la creación de la partida. 
 
 \subsubsection{Sistema de eventos}
-El servidor responde a peticiones HTTP y de Websockets creando eventos que son respondidos de manera secuencial por funciones lambda, cada función sólo responde a un evento, devolviendo una respuesta.
-Javascript es una tecnología uni-hilo, pero es capaz de realizar concurrencia utilizando primitivas asíncronas llamadas promesas, cuando una función marcada como asíncrona se ejecuta, el motor de Javascript la guarda como evento, este evento será manejado cuando el motor de Javascript lo considere oportuno. Por ejemplo, cuando la CPU está esperando una lectura de la memoría, Javascript puede cambiar el contexto y procesar otras funciones. De está manera, Javascript es capaz de maximizar la utilización de su hilo de ejecución.
+El servidor responde a peticiones HTTP y Websockets creando eventos que son respondidos de manera secuencial por funciones lambda, cada función sólo responde a un evento, devolviendo una respuesta.
+Javascript es una tecnología uni-hilo, pero es capaz de responder peticiones asíncronamente utilizando primitivas llamadas promesas. Cuando una función marcada como asíncrona se ejecuta, el motor de Javascript la guarda como evento, este evento será manejado cuando el motor de Javascript lo considere oportuno. Por ejemplo, cuando la CPU está esperando una lectura en memoría, Javascript puede cambiar el contexto y procesar otras funciones encoladas. De está manera, Javascript es capaz de maximizar la utilización de su hilo de ejecución.
 
 \subsubsection{Eventos disponibles}
-El servidor permite la comunicación cliente-servidor utilizando las siguientes rutas HTTP:
-
-\tutor{qué distingue estos eventos de llamadas HTTP como los que se muestran más abajo?}
-\alumno{No acabo de ver como solucionar esto, he llamado 'eventos' a las rutas de WebSockets, y he dejado las 'normales' como rutas HTTP, pero no se que más puedo hacer para solucionarlo}
-\tutor{Te lo pregunto de otra forma, /create-route es un endpoint HTTP o WebSocket? Si es lo primero, debería ir con los endpoints, si es lo segundo, borra estos comentarios y no hables de rutas HTTP en la subseccioón "Eventos disponibles", habla de endpoints WebSocket. Si es necesario, renombra también la subsección a "Eventos WebSocket" o "Endpoints WebSocket".}
-
-\begin{itemize}
-	\item \textit{/create-route}, genera un nuevo identificador de partida. Este identificador es fundamental para la comunicación entre el cliente y el servidor ya que permite la identificación de la partida para realizar las operaciones necesarias.
-	\item \textit{/testing/solution}, este endpoint está disponible para poder realizar un tests de integración de flujo completo.
-\end{itemize}
-
-Además de las rutas HTTP, el servidor permite la comunicación WebSocket utilizando los siguientes eventos:
+El servidor permite la comunicación WebSocket utilizando los siguientes eventos:
 
 \begin{itemize}
 	\item \textit{setup} es un evento de tipo diálogo que une a un jugador a la partida, es necesario enviar como parámetros el código de la sala generado por /create-room y el nombre del usuario que se va a unir a la partida, este evento avisa a todos los demás jugadores de la sala que se ha unido el jugador emitiendo el evento \textit{player\_connection}.
@@ -149,10 +138,10 @@ Además de las rutas HTTP, el servidor permite la comunicación WebSocket utiliz
 
 
 \subsubsection{Endpoints HTTP}
-Como el objetivo del trabajo era el aprendizaje de la comunicación bidireccional, la mayor parte de la comunicación se realiza a traves de websockets, aun asi existen dos rutas disponibles para la realización de comunicación HTTP:
+Como el objetivo del trabajo era el aprendizaje de la comunicación WebSocket, la mayor parte de la comunicación se realiza a traves de estos, aún asi existen dos rutas disponibles para la realización de comunicación HTTP:
 
 \begin{itemize}
-	\item \textit{/create-room} crea una nueva partida para que los jugadores puedan unirse y jugar. Cada partida está identificada por un identificador que se genera durante este proceso.
+	\item \textit{/create-route}, genera un nuevo identificador de partida. Este identificador es fundamental para la comunicación entre el cliente y el servidor ya que permite la identificación de la partida para realizar las operaciones necesarias.
 	\item Existe también una ruta reservada por la librería de Socket.IO que se utiliza internamente para establecer la conexión websocket. Esta ruta está completamente manejada por Socket.IO.
 \end{itemize}
 
@@ -549,11 +538,11 @@ Utilizando Docker, podemos levantar la aplicación al completo, tanto la webapp,
 
 Para levantar la aplicación utilizando Docker necesitamos tener Docker y Docker Compose instalado. Una vez instalado podemos utilizar el siguiente archivo \textit{docker-compose.yaml} (fragmento de Código \ref{alg:docker_compose}). Este archivo indica a Docker que aplicaciones (llamadas servicios) queremos que se ejecuten, aqui podemos agregar aplicaciones propias, o de terceros.
 
-Para desplegar CoWordle, todos las aplicaciones que necesitamos que se ejecuten son propias. La primera es la webapp, y la segunda es el servidor de websockets. Además, en el archivo estamos creando una red entre ambas aplicaciones que permite la comunicación interna de ambas, este paso no es necesario para realizar el despliegue en Okteto, pero si puede llegar a ser necesario en caso de realizar el despliegue en otros sistemas. Las variables de entorno las utiliza.
+Para desplegar CoWordle, todos las aplicaciones que necesitamos que se ejecuten son propias. La primera es la webapp, y la segunda es el servidor de websockets. Además, en el archivo estamos creando una red entre ambas aplicaciones que permite la comunicación interna de ambas, este paso no es necesario para realizar el despliegue en Okteto, pero si puede llegar a ser necesario en caso de realizar el despliegue en otros sistemas, como en local. Las variables de entorno las utilizan las aplicaciones para comunicarse entre si.
 
-\tutor{OJO!!! El siguiente docker-compose.yml solo sirve para desplegar en Okteto, cambia las variables (y comprueba que funciona) para lanzarlo en local}
+Para la aplicación webapp es necesario tener en cuenta que la comunicación WebSocket se realiza entre el cliente y el servidor de WebSockets, utilizando la \textit{PUBLIC\_WEBSOCKET\_URL}. El resto de la comunicación se realiza entre el servidor de la webapp y el servidor de WebSockets, para ello es necesario utilizar la red interna entre ambas aplicaciones.
 
-\begin{mypython}[float={!h},caption={\textit{docker-compose.yaml} para despliegue en Okteto.},label={alg:docker_compose}]
+\begin{mypython}[float={!h},caption={\textit{docker-compose.yaml} para despliegue en local.},label={alg:docker_compose}]
 	version: "3.9"
 	services:
 	webapp:
@@ -563,8 +552,8 @@ Para desplegar CoWordle, todos las aplicaciones que necesitamos que se ejecuten 
 		networks:
 		- inner-network
 		environment:
-		- PUBLIC_WEBSOCKET_URL=https://websockets-dokest.cloud.okteto.net
-		- PUBLIC_WEBSOCKET_EXTERNAL_URL=https://websockets-dokest.cloud.okteto.net
+		- PUBLIC_WEBSOCKET_URL=http://websockets:9000
+		- PUBLIC_WEBSOCKET_EXTERNAL_URL=http://localhost:9000
 		depends_on:
 		- websockets
 	websockets:
@@ -573,6 +562,8 @@ Para desplegar CoWordle, todos las aplicaciones que necesitamos que se ejecuten 
 		- 9000:9000
 		networks:
 		- inner-network
+		environment:
+		- WEBAPP_EXTERNAL_PORT=http://localhost
 	networks:
 		inner-network:
 \end{mypython}
@@ -596,16 +587,7 @@ Una vez esté levantada la aplicación, podemos utilizar la URL \href{http://loc
 \subsection{Utilizando Git o GitHub}
 También está disponible la opción de levantar la aplicación desde el repositorio de GitHub, para ello será necesario descargar el código de ambas aplicaciones.
 
-\tutor{Asume que saben Git y plantea solo esa opción, ya que queda muy verboso}
-
-La primera opción es la recomendada para personas que no conozcan la tecnología Git. Tan solo es necesario seguir la documentación oficial de GitHub, y descargar el código de ambos repositorios.
-
-\begin{itemize}
-	\item La \textbf{Aplicacion web} se encuentra en el repositorio de GitHub \footnote{\url{https://github.com/Dokest/cowordle-webapp}}.
-	\item El \textbf{Servidor websockets} se encuentra en el repositorio de GitHub \footnote{\url{https://github.com/Dokest/cowordle-ws}}.
-\end{itemize}
-
-También es posible descargar el código utilizando git con los comandos mostrados (\ref{sh:git_clone_repos}):
+Es posible descargar el código utilizando git con los comandos mostrados (fragmento de Código \ref{sh:git_clone_repos}):
 
 \begin{mypython}[float={h!},caption={Comandos git para clonar los repositorios.},label={sh:git_clone_repos}]
 	$ git clone https://github.com/Dokest/cowordle-ws.git

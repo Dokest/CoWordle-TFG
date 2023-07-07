@@ -17,7 +17,7 @@ Node.js \cite{nodejs_docs} es probablemente una de las creaciones más influyent
 
 Node.js utiliza internamente el motor de Javascript (y WebAssembly) V8 desarrollado para Chromium por Google.
 
-Una de las principales diferencias entre Node.js y otros sistemas como el motor de PHP, es que no es necesario levantar un proceso para cada llamada, en su lugar, Node.js es capaz de ir recibiendo llamadas e irlas respondiendo en un único hilo de ejecución pero con un sistema de eventos que permite responder varias peticiones simultáneamente \alumno{¿Es simultaneamene más preciso? Según he estado mirando en los links que me pasaste el procesamiento usa una cola de eventos}\tutor{Quita simultaneamente, Node.js responde de manera asíncrona, no simultanea (efectivamente, va encolando eventos)}, esto le permite responder mucho más rápido y eficientemente que otros sistemas.
+Una de las principales diferencias entre Node.js y otros sistemas como el motor de PHP, es que no es necesario levantar un proceso para cada llamada, en su lugar, Node.js es capaz de ir recibiendo llamadas e irlas respondiendo en un único hilo de ejecución pero con un sistema de eventos que permite responder varias peticiones asíncronamente, esto le permite responder mucho más rápido y eficientemente que otros sistemas.
 
 En 2022 y según la encuesta de StackOverflow \cite{so_survey} en la que participaron más de cuarenta y cinco mil personas, Node.js es la tecnología web más usada entre desarrolladores profesionales siendo usada por un 46.31\% de estos.
 
