@@ -53,7 +53,7 @@ El usuario siempre interactúa directamente con la aplicación web, y es esta la
 	\label{fig:ex_comms}
 \end{figure}
 
-Al ser una aplicación en tiempo real, es necesario que todos los usuarios estén al tanto de toda la información relevante para la partida. Como se puede ver en la figura \ref{fig:ex_comms}, cada vez que surge una interacción por parte de un usuario, como la inserción de una nueva palabra en el tablero, el servidor es capaz de procesar esta información y enviar a todos los usuarios el resultado relevante para ellos de la acción del otro jugador.
+Al ser una aplicación en tiempo real, es necesario que todos los usuarios estén al tanto de toda la información relevante para la partida. Como se puede ver en la Figura~\ref{fig:ex_comms}, cada vez que surge una interacción por parte de un usuario, como la inserción de una nueva palabra en el tablero, el servidor es capaz de procesar esta información y enviar a todos los usuarios el resultado relevante para ellos de la acción del otro jugador.
 
 
 \subsection{Aplicación web}
@@ -61,7 +61,7 @@ La aplicación web es la herramienta con la cual el usuario interactúa, permite
 
 Está desarrollada utilizando SvelteKit para la realización de la lógica, y Tailwind para dar color y estilo.
 
-Como se puede ver en la figura \ref{fig:web_diagram}, el flujo principal que sigue el usuario para poder jugar una partida comienza abriendo la página web de la aplicación web, después, creará o se unirá a una partida ya creada, cuando todos los jugadores estén listos, el creador de la partida le dará al botón de comenzar, y después de una cuenta atrás, a todos los jugadores se les presentará un tablero de Wordle donde pondrán ir escribiendo sus intentos. Si alguno de los jugadores descubre la palabra, todos los jugadores verán una nueva pantalla con el nombre de la persona ganadora, en esta nueva pantalla, los jugadores pueden elegir entre salir de la partida o volver a jugar. En caso de que ningún jugador consiga ganar, se les presentará a todos una pantalla en el que se mostrará la palabra objetivo, y las mismas opciones que en el caso de haber habido un ganador.
+Como se puede ver en la Figura~\ref{fig:web_diagram}, el flujo principal que sigue el usuario para poder jugar una partida comienza abriendo la página web de la aplicación web, después, creará o se unirá a una partida ya creada, cuando todos los jugadores estén listos, el creador de la partida le dará al botón de comenzar, y después de una cuenta atrás, a todos los jugadores se les presentará un tablero de Wordle donde pondrán ir escribiendo sus intentos. Si alguno de los jugadores descubre la palabra, todos los jugadores verán una nueva pantalla con el nombre de la persona ganadora, en esta nueva pantalla, los jugadores pueden elegir entre salir de la partida o volver a jugar. En caso de que ningún jugador consiga ganar, se les presentará a todos una pantalla en el que se mostrará la palabra objetivo, y las mismas opciones que en el caso de haber habido un ganador.
 
 \begin{figure}[H]
 	\centering
@@ -129,12 +129,14 @@ El servidor permite la comunicación cliente-servidor utilizando las siguientes 
 
 \tutor{qué distingue estos eventos de llamadas HTTP como los que se muestran más abajo?}
 \alumno{No acabo de ver como solucionar esto, he llamado 'eventos' a las rutas de WebSockets, y he dejado las 'normales' como rutas HTTP, pero no se que más puedo hacer para solucionarlo}
+\tutor{Te lo pregunto de otra forma, /create-route es un endpoint HTTP o WebSocket? Si es lo primero, debería ir con los endpoints, si es lo segundo, borra estos comentarios y no hables de rutas HTTP en la subseccioón "Eventos disponibles", habla de endpoints WebSocket. Si es necesario, renombra también la subsección a "Eventos WebSocket" o "Endpoints WebSocket".}
+
 \begin{itemize}
 	\item \textit{/create-route}, genera un nuevo identificador de partida. Este identificador es fundamental para la comunicación entre el cliente y el servidor ya que permite la identificación de la partida para realizar las operaciones necesarias.
 	\item \textit{/testing/solution}, este endpoint está disponible para poder realizar un tests de integración de flujo completo.
 \end{itemize}
 
-A parte de las rutas HTTP, el servidor permite la comunicación WebSocket utilizando los siguientes eventos:
+Además de las rutas HTTP, el servidor permite la comunicación WebSocket utilizando los siguientes eventos:
 
 \begin{itemize}
 	\item \textit{setup} es un evento de tipo diálogo que une a un jugador a la partida, es necesario enviar como parámetros el código de la sala generado por /create-room y el nombre del usuario que se va a unir a la partida, este evento avisa a todos los demás jugadores de la sala que se ha unido el jugador emitiendo el evento \textit{player\_connection}.
@@ -455,7 +457,7 @@ Una vez ejecutado el comando, Playwright comenzará a realizar los tests, una ve
 	\label{fig:playwright_tests_result}
 \end{figure}
 
-En la página mostrada en la Figura \ref{fig:playwright_tests_result} podemos inspeccionar cada test realizado, pudiendo ver las comprobaciones que se han realizado en cada uno, como se puede ver en la Figura \ref{fig:playwright_test_result}, y en caso de haber fallado, la razón del error.
+En la página mostrada en la Figura~\ref{fig:playwright_tests_result} podemos inspeccionar cada test realizado, pudiendo ver las comprobaciones que se han realizado en cada uno, como se puede ver en la Figura~\ref{fig:playwright_test_result}, y en caso de haber fallado, la razón del error.
 
 \begin{figure}[H]
 	\centering
@@ -547,7 +549,9 @@ Utilizando Docker, podemos levantar la aplicación al completo, tanto la webapp,
 
 Para levantar la aplicación utilizando Docker necesitamos tener Docker y Docker Compose instalado. Una vez instalado podemos utilizar el siguiente archivo \textit{docker-compose.yaml} (fragmento de Código \ref{alg:docker_compose}). Este archivo indica a Docker que aplicaciones (llamadas servicios) queremos que se ejecuten, aqui podemos agregar aplicaciones propias, o de terceros.
 
-Para desplegar CoWordle, todos las aplicaciones que necesitamos que se ejecuten son propias. La primera es la webapp, y la segunda es el servidor de websockets. Además, en el archivo estamos creando una red entre ambas aplicaciones que permite la comunicación interna de ambas, este paso no es necesario para realizar el despliegue en Okteto, pero si puede llegar a ser necesario en caso de realizar el despliegue en otros sistemas. Las variables de entorno las utiliza 
+Para desplegar CoWordle, todos las aplicaciones que necesitamos que se ejecuten son propias. La primera es la webapp, y la segunda es el servidor de websockets. Además, en el archivo estamos creando una red entre ambas aplicaciones que permite la comunicación interna de ambas, este paso no es necesario para realizar el despliegue en Okteto, pero si puede llegar a ser necesario en caso de realizar el despliegue en otros sistemas. Las variables de entorno las utiliza.
+
+\tutor{OJO!!! El siguiente docker-compose.yml solo sirve para desplegar en Okteto, cambia las variables (y comprueba que funciona) para lanzarlo en local}
 
 \begin{mypython}[float={!h},caption={\textit{docker-compose.yaml} para despliegue en Okteto.},label={alg:docker_compose}]
 	version: "3.9"
@@ -592,29 +596,31 @@ Una vez esté levantada la aplicación, podemos utilizar la URL \href{http://loc
 \subsection{Utilizando Git o GitHub}
 También está disponible la opción de levantar la aplicación desde el repositorio de GitHub, para ello será necesario descargar el código de ambas aplicaciones.
 
+\tutor{Asume que saben Git y plantea solo esa opción, ya que queda muy verboso}
+
 La primera opción es la recomendada para personas que no conozcan la tecnología Git. Tan solo es necesario seguir la documentación oficial de GitHub, y descargar el código de ambos repositorios.
 
 \begin{itemize}
-	\item La \textbf{Aplicacion web} se encuentra en el repositorio de GitHub \href{https://github.com/Dokest/cowordle-webapp}.
-	\item El \textbf{Servidor websockets} se encuentra en el repositorio de GitHub \href{https://github.com/Dokest/cowordle-ws}.
+	\item La \textbf{Aplicacion web} se encuentra en el repositorio de GitHub \footnote{\url{https://github.com/Dokest/cowordle-webapp}}.
+	\item El \textbf{Servidor websockets} se encuentra en el repositorio de GitHub \footnote{\url{https://github.com/Dokest/cowordle-ws}}.
 \end{itemize}
 
 También es posible descargar el código utilizando git con los comandos mostrados (\ref{sh:git_clone_repos}):
 
-\begin{mypython}[float={!t},caption={Comandos git para clonar los repositorios.},label={sh:git_clone_repos}]
+\begin{mypython}[float={h!},caption={Comandos git para clonar los repositorios.},label={sh:git_clone_repos}]
 	$ git clone https://github.com/Dokest/cowordle-ws.git
 	$ git clone https://github.com/Dokest/cowordle-webapp.git
 \end{mypython}
 
 Una vez descargado el código, tenemos que levantar ambas aplicaciones: para levantar la webapp, será necesario utilizar el comando \ref{sh:run_webapp}.
 
-\begin{mypython}[float={!t},caption={Comando para levantar la webapp.},label={sh:run_webapp}]
+\begin{mypython}[float={h!},caption={Comando para levantar la webapp.},label={sh:run_webapp}]
 	$ npm run dev
 \end{mypython}
 
 Para levantar el servidor de websockets, será necesario utilizar el comando \ref{sh:run_ws_server}.
 
-\begin{mypython}[float={!t},caption={Comando para levantar el servidor de Websockets.},label={sh:run_ws_server}]
+\begin{mypython}[float={h!},caption={Comando para levantar el servidor de Websockets.},label={sh:run_ws_server}]
 	$ deno task dev
 \end{mypython}
 
